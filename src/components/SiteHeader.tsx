@@ -11,7 +11,7 @@ export function SiteHeader() {
     <header className="wrap" style={{ paddingBlock: "1.25rem 2rem" }}>
       <nav style={{ display: "flex", flexWrap: "wrap", gap: "1rem 1.5rem", alignItems: "baseline" }}>
         <Link href="/" style={{ fontWeight: 600, textDecoration: "none" }}>
-          IxD Commons
+          GW Design Commons
         </Link>
         {nav.map((n) => (
           <Link key={n.href} href={n.href} className="muted" style={{ textDecoration: "none" }}>

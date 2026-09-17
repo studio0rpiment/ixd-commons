@@ -1,4 +1,4 @@
-# IxD Commons
+# GW Design Commons
 
 Opportunities board and advising portal for the Interaction Design program at the
 Corcoran School, George Washington University. Notion is the back office; this site
