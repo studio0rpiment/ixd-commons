@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { normalizeInbound, type InboundEmail } from "@/lib/inbound/normalize";
 import { isResendRequest, resendToInbound } from "@/lib/inbound/resend";
-import { extractAddress, hasValidWebhookSecret, isAllowedSender } from "@/lib/inbound/verify";
+import { allowlistDomains, extractAddress, hasValidWebhookSecret, isAllowedSender } from "@/lib/inbound/verify";
 import { extractListing } from "@/lib/extract/fromEmail";
 import { createDraftListing } from "@/lib/notion/listings";
 
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const draft = extractListing(email);
+    const draft = extractListing(email, { ownDomains: allowlistDomains() });
     const page = await createDraftListing(draft, {
       source: "email",
       forwardedBy: extractAddress(email.from),

@@ -14,6 +14,15 @@ export function isAllowedSender(from: string): boolean {
   return list.some((rule) => (rule.startsWith("@") ? addr.endsWith(rule) : addr === rule));
 }
 
+/** Domain entries of the allowlist ("@gwu.edu" → "gwu.edu"), for the extractor to treat as "us". */
+export function allowlistDomains(): string[] {
+  return (process.env.INBOUND_ALLOWLIST ?? "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter((s) => s.startsWith("@"))
+    .map((s) => s.slice(1));
+}
+
 /** "Kevin Patton <kp@gwu.edu>" → "kp@gwu.edu" */
 export function extractAddress(from: string): string {
   const m = from.match(/<([^>]+)>/);
