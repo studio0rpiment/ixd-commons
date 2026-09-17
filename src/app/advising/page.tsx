@@ -11,7 +11,8 @@ export default function AdvisingPage() {
   return (
     <>
       <h1>Advising</h1>
-      <p className="muted">Coming soon: degree paths, thesis timeline, portfolio expectations.</p>
+      <p className="muted">Coming soon: degree paths for Graphic Design and Interaction Design, thesis timelines,
+        portfolio expectations.</p>
     </>
   );
 }

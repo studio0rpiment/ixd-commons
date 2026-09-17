@@ -20,6 +20,9 @@ export type LocationMode = z.infer<typeof LocationMode>;
 export const ListingStatus = z.enum(["Needs review", "Published", "Expired", "Declined"]);
 export type ListingStatus = z.infer<typeof ListingStatus>;
 
+export const Program = z.enum(["Graphic Design", "Interaction Design"]);
+export type Program = z.infer<typeof Program>;
+
 export const Source = z.enum(["email", "form", "faculty", "alumni"]);
 export type Source = z.infer<typeof Source>;
 
@@ -28,6 +31,9 @@ export const ListingDraft = z.object({
   organization: z.string().min(1),
   role: z.string().min(1),
   type: ListingType.nullable(),
+  programs: z
+    .array(Program)
+    .describe("Which GW Design programs this fits. Both when the work spans them or is unclear."),
   locationMode: LocationMode.nullable(),
   location: z.string().nullable().describe("City / campus / 'anywhere'"),
   compensation: z.string().nullable().describe("As stated; do not infer"),

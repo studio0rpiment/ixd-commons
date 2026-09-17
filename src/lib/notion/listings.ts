@@ -8,6 +8,7 @@ import {
   ListingStatus,
   ListingType,
   LocationMode,
+  Program,
   Source,
 } from "@/lib/listing/schema";
 import { slugify } from "@/lib/listing/slug";
@@ -30,6 +31,7 @@ function toListing(page: Page): Listing | null {
     organization,
     role,
     type: read.select(p, P.type),
+    programs: read.multiSelect(p, P.programs).filter((n): n is Program => Program.safeParse(n).success),
     locationMode: read.select(p, P.locationMode),
     location: read.text(p, P.location),
     compensation: read.text(p, P.compensation),
@@ -80,6 +82,7 @@ export async function createDraftListing(
       [P.role]: write.title(draft.role),
       [P.organization]: write.text(draft.organization),
       [P.type]: write.select(draft.type satisfies ListingType | null),
+      [P.programs]: write.multiSelect(draft.programs),
       [P.locationMode]: write.select(draft.locationMode satisfies LocationMode | null),
       [P.location]: write.text(draft.location),
       [P.compensation]: write.text(draft.compensation),

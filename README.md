@@ -1,7 +1,7 @@
 # GW Design Commons
 
-Opportunities board and advising portal for the Interaction Design program at the
-Corcoran School, George Washington University. Notion is the back office; this site
+Opportunities board and advising portal for GW Design — the Graphic Design and
+Interaction Design programs at the Corcoran School, George Washington University. Notion is the back office; this site
 is the public face.
 
 ## How it works

@@ -6,7 +6,7 @@ import { plexSans } from "@/fonts";
 export const metadata: Metadata = {
   title: { default: "GW Design Commons", template: "%s · GW Design Commons" },
   description:
-    "Opportunities and advising for Interaction Design at the Corcoran School, George Washington University.",
+    "Opportunities and advising for GW Design — Graphic Design and Interaction Design at the Corcoran School, George Washington University.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

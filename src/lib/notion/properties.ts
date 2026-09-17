@@ -7,6 +7,7 @@ export const P = {
   role: "Role", // title
   organization: "Organization", // rich_text
   type: "Type", // select
+  programs: "Programs", // multi_select
   locationMode: "Location mode", // select
   location: "Location", // rich_text
   compensation: "Compensation", // rich_text

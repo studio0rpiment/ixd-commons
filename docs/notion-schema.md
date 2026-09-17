@@ -7,6 +7,7 @@ One database, one review queue. Property names must match `src/lib/notion/proper
 | Role           | Title     | Job / internship title                                  |
 | Organization   | Text      |                                                         |
 | Type           | Select    | internship, full-time, part-time, freelance, research, fellowship |
+| Programs       | Multi-select | Graphic Design, Interaction Design                     |
 | Location mode  | Select    | on-site, hybrid, remote                                 |
 | Location       | Text      | City, campus, "anywhere"                                |
 | Compensation   | Text      | As stated by the employer                               |

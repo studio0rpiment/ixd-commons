@@ -5,7 +5,8 @@ import { ListingDraft } from "@/lib/listing/schema";
 const MODEL = process.env.EXTRACT_MODEL ?? "claude-sonnet-4-5";
 
 const SYSTEM = `You turn forwarded emails about jobs, internships, and freelance work into
-structured listings for an interaction design program's opportunity board.
+structured listings for GW Design's opportunity board (Graphic Design and
+Interaction Design programs at the Corcoran School, George Washington University).
 
 Rules:
 - The email is usually FORWARDED by a faculty member. The employer is the original
@@ -14,9 +15,13 @@ Rules:
 - Dates: return ISO YYYY-MM-DD. "Rolling", "ASAP", "until filled" → null.
 - Compensation: quote as written ("$25/hr", "unpaid, for credit"). Do not estimate.
 - Summary: two plain sentences a student can act on — what the work is, and what
-  makes it relevant to interaction design (interfaces, prototyping, research,
-  spatial/AR, sound, physical computing, service design...). No hype.
-- Type: pick the closest of internship, full-time, part-time, freelance, research, fellowship.`;
+  makes it relevant to design students (graphic design, typography, branding,
+  editorial, motion, interfaces, prototyping, research, spatial/AR, sound,
+  physical computing, service design...). No hype.
+- Type: pick the closest of internship, full-time, part-time, freelance, research, fellowship.
+- Programs: "Graphic Design" for visual/brand/editorial/motion/typography work,
+  "Interaction Design" for UX/UI/prototyping/research/spatial/physical computing work,
+  both when it spans them or you cannot tell.`;
 
 export type EmailInput = {
   subject: string;

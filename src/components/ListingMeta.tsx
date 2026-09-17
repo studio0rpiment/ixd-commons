@@ -4,6 +4,7 @@ import { Tag } from "./Tag";
 /** The row of facts under a listing title. Shared by card and detail page. */
 export function ListingMeta({ listing }: { listing: Listing }) {
   const items = [
+    ...listing.programs,
     listing.type,
     listing.locationMode,
     listing.location,

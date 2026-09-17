@@ -10,7 +10,7 @@ export default function OpportunitiesPage() {
     <>
       <h1>Opportunities</h1>
       <p className="muted">
-        Reviewed by IxD faculty. Listings disappear on their deadline. For the university-wide
+        Reviewed by GW Design faculty. Listings disappear on their deadline. For the university-wide
         board, see Handshake.
       </p>
       <Suspense fallback={<p className="muted">Loading…</p>}>

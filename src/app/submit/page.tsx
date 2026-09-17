@@ -13,9 +13,10 @@ export default function SubmitPage() {
     <>
       <h1>Post an opportunity</h1>
       <p>
-        We list internships, jobs, freelance briefs, and research roles that fit interaction
-        design: interfaces, prototyping, UX research, spatial and AR work, sound, physical
-        computing, service design. Faculty review every listing before it goes up.
+        We list internships, jobs, freelance briefs, and research roles that fit GW Design
+        students: graphic design, typography, branding, editorial and motion work, interfaces,
+        prototyping, UX research, spatial and AR work, sound, physical computing, service
+        design. Faculty review every listing before it goes up.
       </p>
       {url ? (
         <p>
@@ -25,7 +26,7 @@ export default function SubmitPage() {
         <p className="muted">Submission form link not configured yet.</p>
       )}
       <p className="muted small">
-        Prefer email? Send the details to the IxD faculty contact and we&apos;ll add it for you.
+        Prefer email? Send the details to a GW Design faculty member and we&apos;ll add it for you.
       </p>
     </>
   );

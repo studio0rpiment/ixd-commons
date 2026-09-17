@@ -42,7 +42,7 @@ async function Detail({ params }: { params: Params }) {
           <a href={`mailto:${listing.contactEmail}`}>{listing.contactEmail}</a>.
         </p>
       ) : (
-        <p className="muted">Ask IxD faculty for the contact.</p>
+        <p className="muted">Ask GW Design faculty for the contact.</p>
       )}
     </article>
   );
