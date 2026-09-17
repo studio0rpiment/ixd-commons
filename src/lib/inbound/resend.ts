@@ -17,7 +17,15 @@ export async function resendToInbound(rawBody: string, headers: Headers): Promis
 
   const resend = new Resend(apiKey);
   // Throws on a bad signature — the caller turns that into a 401.
-  const event = resend.webhooks.verify({ payload: rawBody, headers, webhookSecret });
+  const event = resend.webhooks.verify({
+    payload: rawBody,
+    headers: {
+      id: headers.get("svix-id") ?? "",
+      timestamp: headers.get("svix-timestamp") ?? "",
+      signature: headers.get("svix-signature") ?? "",
+    },
+    webhookSecret,
+  });
   if (event.type !== "email.received") return null;
 
   const { data, error } = await resend.emails.receiving.get(event.data.email_id);
