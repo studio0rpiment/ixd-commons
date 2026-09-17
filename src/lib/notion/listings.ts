@@ -40,7 +40,6 @@ function toListing(page: Page): Listing | null {
     contactEmail: read.email(p, P.contactEmail),
     contactName: read.text(p, P.contactName),
     summary: read.text(p, P.summary) ?? "",
-    uncertain: [],
   });
   return parsed.success ? parsed.data : null;
 }

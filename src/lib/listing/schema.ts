@@ -51,8 +51,8 @@ export const ListingDraft = z.object({
 });
 export type ListingDraft = z.infer<typeof ListingDraft>;
 
-/** A listing as read back from Notion. */
-export const Listing = ListingDraft.extend({
+/** A listing as read back from Notion. Body text and reviewer notes live in Notion, not here. */
+export const Listing = ListingDraft.omit({ description: true, uncertain: true }).extend({
   id: z.string(),
   slug: z.string(),
   status: ListingStatus,
