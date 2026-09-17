@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { normalizeInbound } from "@/lib/inbound/normalize";
+import { normalizeInbound, type InboundEmail } from "@/lib/inbound/normalize";
+import { isResendRequest, resendToInbound } from "@/lib/inbound/resend";
 import { extractAddress, hasValidWebhookSecret, isAllowedSender } from "@/lib/inbound/verify";
 import { extractListing } from "@/lib/extract/fromEmail";
 import { createDraftListing } from "@/lib/notion/listings";
@@ -9,21 +10,33 @@ export const maxDuration = 60;
 /**
  * POST /api/inbound — the "forward an email, get a draft listing" endpoint.
  *
- * Mail provider (Postmark / Cloudflare Email Worker / Resend) POSTs the message
- * here. Flow: secret → sender allowlist → extract with Claude → Notion draft.
- * Always returns 200 to a recognised provider so it does not retry forever;
- * the outcome is in the JSON body and in the server log.
+ * Two ways in:
+ *  - Resend inbound: signed webhook (Svix headers), body fetched by id.
+ *  - Anything else (Postmark, a Cloudflare Email Worker, the test script):
+ *    shared secret via x-webhook-secret header or ?secret=.
+ *
+ * Then: sender allowlist → pattern extraction (no model) → Notion draft (Needs review).
+ * Returns 200 once the request is recognised so the provider does not retry;
+ * the outcome is in the JSON body and the server log.
  */
 export async function POST(req: Request) {
-  if (!hasValidWebhookSecret(req)) {
-    return NextResponse.json({ ok: false, reason: "bad secret" }, { status: 401 });
-  }
+  const raw = await req.text();
+  let email: InboundEmail;
 
-  let email;
   try {
-    email = normalizeInbound(await req.json());
+    if (isResendRequest(req)) {
+      const parsed = await resendToInbound(raw, req.headers);
+      if (!parsed) return NextResponse.json({ ok: true, ignored: "not an email.received event" });
+      email = parsed;
+    } else {
+      if (!hasValidWebhookSecret(req)) {
+        return NextResponse.json({ ok: false, reason: "bad secret" }, { status: 401 });
+      }
+      email = normalizeInbound(JSON.parse(raw));
+    }
   } catch (e) {
-    return NextResponse.json({ ok: false, reason: "unrecognised payload", detail: String(e) }, { status: 400 });
+    console.warn("[inbound] rejected request", e);
+    return NextResponse.json({ ok: false, reason: "unrecognised or unverified payload", detail: String(e) }, { status: 401 });
   }
 
   if (!isAllowedSender(email.from)) {
@@ -32,7 +45,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const draft = await extractListing(email);
+    const draft = extractListing(email);
     const page = await createDraftListing(draft, {
       source: "email",
       forwardedBy: extractAddress(email.from),

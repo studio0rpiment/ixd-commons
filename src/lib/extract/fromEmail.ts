@@ -1,57 +1,116 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { z } from "zod";
-import { ListingDraft } from "@/lib/listing/schema";
+import type { ListingDraft } from "@/lib/listing/schema";
 
-const MODEL = process.env.EXTRACT_MODEL ?? "claude-sonnet-4-5";
+/**
+ * Dependency-free, best-effort extraction. Pulls out what patterns find
+ * reliably (links, addresses, dates) and leaves the rest for the reviewer.
+ * Everything guessed is named in `uncertain` so the review queue shows it.
+ */
+export type EmailInput = { subject: string; text: string; from: string };
 
-const SYSTEM = `You turn forwarded emails about jobs, internships, and freelance work into
-structured listings for GW Design's opportunity board (Graphic Design and
-Interaction Design programs at the Corcoran School, George Washington University).
+export function extractListing(email: EmailInput): ListingDraft {
+  const uncertain: string[] = [];
+  const text = email.text;
 
-Rules:
-- The email is usually FORWARDED by a faculty member. The employer is the original
-  sender inside the quoted message, not the forwarder.
-- Never invent. If a field is not stated, return null and name it in "uncertain".
-- Dates: return ISO YYYY-MM-DD. "Rolling", "ASAP", "until filled" → null.
-- Compensation: quote as written ("$25/hr", "unpaid, for credit"). Do not estimate.
-- Summary: two plain sentences a student can act on — what the work is, and what
-  makes it relevant to design students (graphic design, typography, branding,
-  editorial, motion, interfaces, prototyping, research, spatial/AR, sound,
-  physical computing, service design...). No hype.
-- Type: pick the closest of internship, full-time, part-time, freelance, research, fellowship.
-- Programs: "Graphic Design" for visual/brand/editorial/motion/typography work,
-  "Interaction Design" for UX/UI/prototyping/research/spatial/physical computing work,
-  both when it spans them or you cannot tell.`;
+  const role = cleanSubject(email.subject) || "Untitled opportunity";
+  if (!cleanSubject(email.subject)) uncertain.push("role (no subject)");
 
-export type EmailInput = {
-  subject: string;
-  text: string;
-  from: string;
-};
+  const original = findOriginalSender(text);
+  const contactEmail = original?.email ?? firstEmail(text, email.from);
+  const contactName = original?.name ?? null;
+  if (!contactEmail) uncertain.push("contact email");
 
-export async function extractListing(email: EmailInput): Promise<ListingDraft> {
-  const client = new Anthropic();
-  const res = await client.messages.create({
-    model: MODEL,
-    max_tokens: 1024,
-    system: SYSTEM,
-    tools: [
-      {
-        name: "save_listing",
-        description: "Save the extracted listing.",
-        input_schema: z.toJSONSchema(ListingDraft) as Anthropic.Tool["input_schema"],
-      },
-    ],
-    tool_choice: { type: "tool", name: "save_listing" },
-    messages: [
-      {
-        role: "user",
-        content: `From: ${email.from}\nSubject: ${email.subject}\n\n${email.text.slice(0, 20_000)}`,
-      },
-    ],
-  });
+  const organization = orgFromEmail(contactEmail) ?? "Unknown organization";
+  uncertain.push(organization === "Unknown organization" ? "organization" : "organization (guessed from email domain)");
 
-  const call = res.content.find((b) => b.type === "tool_use");
-  if (!call || call.type !== "tool_use") throw new Error("Extractor returned no listing");
-  return ListingDraft.parse(call.input);
+  const applyUrl = firstUrl(text);
+  if (!applyUrl) uncertain.push("apply URL");
+
+  const deadline = findDeadline(text);
+  if (!deadline) uncertain.push("deadline");
+
+  uncertain.push("type", "programs", "location", "compensation", "summary");
+
+  return {
+    organization,
+    role,
+    type: null,
+    programs: [],
+    locationMode: null,
+    location: null,
+    compensation: null,
+    deadline,
+    applyUrl,
+    contactEmail,
+    contactName,
+    summary: "",
+    uncertain,
+  };
+}
+
+function cleanSubject(s: string): string {
+  return s.replace(/^(\s*(fwd?|fw|re|aw|wg)\s*:\s*)+/i, "").trim().slice(0, 120);
+}
+
+/** "From: Dana Whitfield <dw@si.edu>" inside a forwarded body. */
+function findOriginalSender(text: string): { name: string | null; email: string } | null {
+  const m = text.match(/^\s*(?:>\s*)?(?:from|von)\s*:\s*(.+)$/im);
+  if (!m) return null;
+  const line = m[1].trim();
+  const addr = line.match(/<([^>]+@[^>]+)>/)?.[1] ?? line.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)?.[0];
+  if (!addr) return null;
+  const name = line.replace(/<[^>]+>/, "").replace(/["']/g, "").trim();
+  return { name: name && !name.includes("@") ? name : null, email: addr.toLowerCase() };
+}
+
+function firstEmail(text: string, exclude: string): string | null {
+  const ex = exclude.toLowerCase();
+  const all = text.match(/[\w.+-]+@[\w-]+\.[\w.-]+/g) ?? [];
+  return all.map((a) => a.toLowerCase()).find((a) => !ex.includes(a)) ?? null;
+}
+
+function orgFromEmail(addr: string | null): string | null {
+  if (!addr) return null;
+  const domain = addr.split("@")[1] ?? "";
+  const generic = /^(gmail|yahoo|outlook|hotmail|icloud|proton|me)\./i;
+  if (!domain || generic.test(domain)) return null;
+  const label = domain.split(".").slice(-2, -1)[0] ?? domain;
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+function firstUrl(text: string): string | null {
+  const m = text.match(/https?:\/\/[^\s<>()"']+/i);
+  if (!m) return null;
+  const url = m[0].replace(/[.,;:!?)]+$/, "");
+  try {
+    return new URL(url).toString();
+  } catch {
+    return null;
+  }
+}
+
+const MONTHS = "jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec";
+
+/** A date near "deadline" / "apply by" / "due" / "closes" wins; else null. */
+function findDeadline(text: string): string | null {
+  const window = text.match(new RegExp(`(?:deadline|apply by|due|closes?|until)[^.\\n]{0,60}`, "i"))?.[0];
+  if (!window) return null;
+  const y = new Date().getFullYear();
+  let m = window.match(new RegExp(`(${MONTHS})[a-z]*\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?(?:,?\\s+(\\d{4}))?`, "i"));
+  if (m) return iso(m[3] ? +m[3] : y, monthIndex(m[1]), +m[2]);
+  m = window.match(/(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/);
+  if (m) return iso(m[3] ? (m[3].length === 2 ? 2000 + +m[3] : +m[3]) : y, +m[1] - 1, +m[2]);
+  m = window.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+  return null;
+}
+
+function monthIndex(s: string): number {
+  return MONTHS.split("|").findIndex((mo) => s.toLowerCase().startsWith(mo.slice(0, 3)));
+}
+
+function iso(y: number, mIdx: number, d: number): string | null {
+  if (mIdx < 0 || d < 1 || d > 31) return null;
+  const dt = new Date(Date.UTC(y, mIdx, d));
+  if (dt < new Date(Date.UTC(y, 0, 1))) return null;
+  return dt.toISOString().slice(0, 10);
 }

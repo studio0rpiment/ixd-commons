@@ -7,7 +7,7 @@ is the public face.
 ## How it works
 
 ```
-employer email ─▶ faculty forwards ─▶ /api/inbound ─▶ Claude extracts ─▶ Notion (Needs review)
+employer email ─▶ faculty forwards ─▶ /api/inbound ─▶ pattern extract ─▶ Notion (Needs review)
 employer form  ─────────────────────────────────────────────────────▶ Notion (Needs review)
                                                                           │
                                           faculty flips Status → Published │
@@ -23,7 +23,7 @@ Event-driven end to end. The only timer is a one-day `cacheLife` safety net in
 ```
 src/lib/listing/     schema.ts — the one zod shape every listing passes through; slug.ts
 src/lib/notion/      client, properties (column names), read/write helpers, listings (queries), cache
-src/lib/extract/     fromEmail.ts — Claude tool-use extraction into ListingDraft
+src/lib/extract/     fromEmail.ts — dependency-free pattern extraction (links, emails, dates) into ListingDraft
 src/lib/inbound/     normalize (provider payload → InboundEmail), verify (allowlist, secret)
 src/app/api/         inbound/ and notion-webhook/ route handlers
 src/app/             pages: /, /opportunities, /opportunities/[slug], /advising, /submit
@@ -40,15 +40,19 @@ scripts/             send-test-email.ts
 3. `pnpm install && pnpm dev`
 4. In another shell: `pnpm tsx scripts/send-test-email.ts` — a draft should appear in Notion.
 5. Deploy (Vercel is the path of least resistance for App Router + route handlers).
-6. Point a mail provider's inbound webhook at `/api/inbound` with the shared secret:
-   - Postmark inbound: JSON payload handled as-is.
-   - Cloudflare Email Routing → Worker: forward `{from, subject, text}` (see `normalize.ts`).
+6. Point a mail provider at `/api/inbound`:
+   - **Resend inbound (preferred):** Receiving → create a `*.resend.app` address (or MX on your domain);
+     Webhooks → add `https://<site>/api/inbound`, event `email.received`; copy its signing secret to
+     `RESEND_WEBHOOK_SECRET`. Signed, no query secret needed.
+   - Postmark inbound: JSON payload handled as-is; add `?secret=<INBOUND_WEBHOOK_SECRET>` to the URL.
+   - Cloudflare Email Routing → Worker: POST `{from, subject, text}` with the shared secret.
 7. Register the Notion webhook per `docs/notion-schema.md`.
 
 ## Decisions
 
 - **Notion as CMS, not a custom admin.** Colleagues add and review listings without accounts here.
-- **Human in the loop.** Nothing publishes without a status flip; extraction only drafts.
+- **Human in the loop, no model.** Forwarding creates a row with the original email attached and the
+  mechanical fields (link, contact, deadline) filled; the reviewer writes org/role/summary in Notion.
 - **Sender allowlist on inbound.** The address is guessable; the allowlist is the gate.
 - **Expiry is computed at read time** from Deadline, so nobody has to archive by hand.
 - **rem everywhere**, tokens on `:root`, dark mode via `prefers-color-scheme`.
