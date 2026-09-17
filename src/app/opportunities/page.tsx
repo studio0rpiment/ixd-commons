@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { cachedListings } from "@/lib/notion/cache";
+import { live } from "@/lib/notion/listings";
 import { ListingCard } from "@/components/ListingCard";
 import { HANDSHAKE_URL } from "@/lib/links";
 
@@ -22,7 +24,8 @@ export default function OpportunitiesPage() {
 }
 
 async function Board() {
-  const listings = await cachedListings();
+  await connection(); // render per request so "today" is today, not build day
+  const listings = live(await cachedListings());
   if (listings.length === 0) {
     return <p className="muted">Nothing open right now. Check back soon.</p>;
   }

@@ -15,8 +15,9 @@ employer form (/submit, server action) ─────────────�
                                      Notion webhook ─▶ /api/notion-webhook ─▶ cache dropped ─▶ site updates
 ```
 
-Event-driven end to end. The only timer is a one-day `cacheLife` safety net in
-`src/lib/notion/cache.ts`, there in case the webhook is ever misconfigured.
+Event-driven end to end. The only timer is a one-hour `cacheLife` safety net in
+`src/lib/notion/cache.ts`, there in case a webhook delivery is ever missed. Deadline
+expiry is checked per request (`live()`), since no event fires when a date passes.
 
 ## Layout
 
@@ -54,7 +55,7 @@ scripts/             send-test-email.ts
 - **Human in the loop, no model.** Forwarding creates a row with the original email attached and the
   mechanical fields (link, contact, deadline) filled; the reviewer writes org/role/summary in Notion.
 - **Sender allowlist on inbound.** The address is guessable; the allowlist is the gate.
-- **Expiry is computed at read time** from Deadline, so nobody has to archive by hand.
+- **Expiry is computed per request** from Deadline, so nobody has to archive by hand.
 - **rem everywhere**, tokens on `:root`, dark mode via `prefers-color-scheme`.
 
 ## Not yet

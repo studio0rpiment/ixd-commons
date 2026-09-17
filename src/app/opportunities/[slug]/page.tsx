@@ -1,7 +1,9 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { cachedListings, cachedListingBlocks } from "@/lib/notion/cache";
+import { live } from "@/lib/notion/listings";
 import { NotionBlocks } from "@/components/NotionBlocks";
 import { ListingMeta } from "@/components/ListingMeta";
 
@@ -17,7 +19,8 @@ export default function ListingPage({ params }: { params: Params }) {
 
 async function Detail({ params }: { params: Params }) {
   const { slug } = await params;
-  const listing = (await cachedListings()).find((l) => l.slug === slug);
+  await connection();
+  const listing = live(await cachedListings()).find((l) => l.slug === slug);
   if (!listing) notFound();
   const blocks = await cachedListingBlocks(listing.id);
 

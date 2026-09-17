@@ -44,28 +44,22 @@ function toListing(page: Page): Listing | null {
   return parsed.success ? parsed.data : null;
 }
 
-/** Published listings, newest first. Expiry is enforced here, not in Notion. */
+/** All Published listings, newest first. Deadline expiry is applied at request time (see `live`). */
 export async function getPublishedListings(): Promise<Listing[]> {
-  const today = new Date().toISOString().slice(0, 10);
   const res = await notion().dataSources.query({
     data_source_id: listingsDataSource(),
-    filter: {
-      and: [
-        { property: P.status, select: { equals: "Published" satisfies ListingStatus } },
-        {
-          or: [
-            { property: P.deadline, date: { is_empty: true } },
-            { property: P.deadline, date: { on_or_after: today } },
-          ],
-        },
-      ],
-    },
+    filter: { property: P.status, select: { equals: "Published" satisfies ListingStatus } },
     sorts: [
       { property: P.publishedAt, direction: "descending" },
       { timestamp: "created_time", direction: "descending" },
     ],
   });
   return res.results.map((r) => toListing(r as Page)).filter((l): l is Listing => l !== null);
+}
+
+/** Drop listings whose deadline has passed, as of now. Pure; call at request time. */
+export function live(listings: Listing[], today = new Date().toISOString().slice(0, 10)): Listing[] {
+  return listings.filter((l) => !l.deadline || l.deadline >= today);
 }
 
 export async function getListingBySlug(slug: string): Promise<Listing | null> {
