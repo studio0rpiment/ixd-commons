@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
+import { plexSans } from "@/fonts";
 
 export const metadata: Metadata = {
   title: { default: "IxD Commons", template: "%s · IxD Commons" },
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={plexSans.variable}>
       <body>
         <SiteHeader />
         <main className="wrap" style={{ paddingBottom: "4rem" }}>

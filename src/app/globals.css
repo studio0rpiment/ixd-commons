@@ -12,7 +12,6 @@
   --step-1: 1.25rem;
   --step-2: 1.6rem;
   --step-3: 2.1rem;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,7 +29,8 @@
   box-sizing: border-box;
 }
 html {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
   font-size: 100%;
   line-height: 1.5;
   background: var(--bg);
@@ -49,11 +49,13 @@ a {
 }
 h1 {
   font-size: var(--step-3);
+  font-weight: 200;
   line-height: 1.1;
   margin: 0 0 0.5em;
 }
 h2 {
   font-size: var(--step-1);
+  font-weight: 700;
   margin: 2rem 0 0.5rem;
 }
 .muted {
