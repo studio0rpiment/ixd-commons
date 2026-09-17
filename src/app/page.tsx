@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-      <h1>Design at GW, and where it goes next.</h1>
+      <h1>For GW Design Students</h1>
       <p style={{ fontSize: "var(--step-1)", maxWidth: "36rem" }}>
         A hand-picked board of internships, jobs, and research roles for Graphic Design and
         Interaction Design students at GW, plus the advising notes we keep repeating in office
