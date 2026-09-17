@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HANDSHAKE_URL } from "@/lib/links";
 
 export const metadata: Metadata = { title: "Post an opportunity" };
 
@@ -25,6 +26,10 @@ export default function SubmitPage() {
       ) : (
         <p className="muted">Submission form link not configured yet.</p>
       )}
+      <p className="muted small">
+        For a formal posting visible to all GW students, also post on{" "}
+        <a href={HANDSHAKE_URL}>Handshake</a>, the university&apos;s career platform.
+      </p>
       <p className="muted small">
         Prefer email? Send the details to a GW Design faculty member and we&apos;ll add it for you.
       </p>

@@ -41,6 +41,7 @@ export const ListingDraft = z.object({
   applyUrl: z.string().url().nullable(),
   contactEmail: z.string().email().nullable(),
   contactName: z.string().nullable(),
+  description: z.string().describe("Employer's own words, for the page body; reviewer edits in Notion"),
   summary: z
     .string()
     .describe("Two plain sentences for students: what the work is and why it fits interaction design"),

@@ -27,7 +27,7 @@ src/lib/extract/     fromEmail.ts — dependency-free pattern extraction (links,
 src/lib/inbound/     normalize (provider payload → InboundEmail), verify (allowlist, secret)
 src/app/api/         inbound/ and notion-webhook/ route handlers
 src/app/             pages: /, /opportunities, /opportunities/[slug], /advising, /submit
-src/components/      Tag, ListingMeta, ListingCard, SiteHeader
+src/components/      Tag, ListingMeta, ListingCard, SiteHeader, NotionBlocks + RichText (page body → HTML)
 docs/notion-schema.md  the database to create in Notion
 scripts/             send-test-email.ts
 ```

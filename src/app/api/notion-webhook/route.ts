@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
 import { LISTINGS_TAG } from "@/lib/notion/cache";
+import { stampPublishedAt } from "@/lib/notion/listings";
 
 /**
  * POST /api/notion-webhook — Notion calls this when a page in the listings
@@ -22,6 +23,12 @@ export async function POST(req: Request) {
   const given = req.headers.get("x-webhook-secret") ?? new URL(req.url).searchParams.get("secret");
   if (expected && given !== expected) {
     return NextResponse.json({ ok: false }, { status: 401 });
+  }
+
+  // If a page was just flipped to Published without a date, stamp it so it sorts to the top.
+  const entity = body.entity as { type?: string; id?: string } | undefined;
+  if (entity?.type === "page" && entity.id) {
+    await stampPublishedAt(entity.id).catch((e) => console.warn("[notion-webhook] stamp failed", e));
   }
 
   revalidateTag(LISTINGS_TAG, "max");

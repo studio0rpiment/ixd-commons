@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { getPublishedListings } from "./listings";
+import { getPublishedListings, getListingBlocks, type Block } from "./listings";
 import type { Listing } from "@/lib/listing/schema";
 
 export const LISTINGS_TAG = "listings";
@@ -21,4 +21,12 @@ export async function cachedListings(): Promise<Listing[]> {
     return [];
   }
   return getPublishedListings();
+}
+
+export async function cachedListingBlocks(pageId: string): Promise<Block[]> {
+  "use cache";
+  cacheTag(LISTINGS_TAG);
+  cacheLife("days");
+  if (!process.env.NOTION_TOKEN) return [];
+  return getListingBlocks(pageId);
 }

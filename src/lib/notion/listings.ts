@@ -61,7 +61,10 @@ export async function getPublishedListings(): Promise<Listing[]> {
         },
       ],
     },
-    sorts: [{ property: P.publishedAt, direction: "descending" }],
+    sorts: [
+      { property: P.publishedAt, direction: "descending" },
+      { timestamp: "created_time", direction: "descending" },
+    ],
   });
   return res.results.map((r) => toListing(r as Page)).filter((l): l is Listing => l !== null);
 }
@@ -97,28 +100,64 @@ export async function createDraftListing(
       [P.slug]: write.text(slugify(draft.organization, draft.role)),
       [P.forwardedBy]: write.email(meta.forwardedBy),
     }),
-    children: meta.rawBody
-      ? [
-          {
-            object: "block",
-            type: "heading_3",
-            heading_3: { rich_text: [{ type: "text", text: { content: "Original message" } }] },
-          },
-          ...chunk(meta.rawBody).map((c) => ({
-            object: "block" as const,
-            type: "paragraph" as const,
-            paragraph: { rich_text: [{ type: "text" as const, text: { content: c } }] },
-          })),
-        ]
-      : [],
+    children: [
+      ...chunk(draft.description).map(paragraph),
+      ...(meta.rawBody
+        ? [
+            {
+              object: "block" as const,
+              type: "toggle" as const,
+              toggle: {
+                rich_text: [{ type: "text" as const, text: { content: "Original message" } }],
+                children: chunk(meta.rawBody).map(paragraph),
+              },
+            },
+          ]
+        : []),
+    ],
   });
   const url = "url" in page ? page.url : `https://notion.so/${page.id.replace(/-/g, "")}`;
   return { id: page.id, url };
 }
 
-/** Notion caps a rich_text segment at 2000 chars. */
+/** Notion caps a rich_text segment at 2000 chars; split on paragraph breaks where possible. */
 function chunk(s: string, n = 1900): string[] {
   const out: string[] = [];
-  for (let i = 0; i < s.length && out.length < 50; i += n) out.push(s.slice(i, i + n));
+  for (const para of s.split(/\n{2,}/)) {
+    for (let i = 0; i < para.length && out.length < 90; i += n) out.push(para.slice(i, i + n));
+  }
+  return out.filter((c) => c.trim());
+}
+
+function paragraph(text: string) {
+  return {
+    object: "block" as const,
+    type: "paragraph" as const,
+    paragraph: { rich_text: [{ type: "text" as const, text: { content: text } }] },
+  };
+}
+
+/** Page body blocks for the detail page, stopping at the "Original message" toggle. */
+export async function getListingBlocks(pageId: string): Promise<Block[]> {
+  const res = await notion().blocks.children.list({ block_id: pageId, page_size: 100 });
+  const out: Block[] = [];
+  for (const b of res.results as Block[]) {
+    if (b.type === "toggle") continue;
+    out.push(b);
+  }
   return out;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Block = { id: string; type: string } & Record<string, any>;
+
+/** Set "Published at" = today when Status is Published and the date is empty. Idempotent. */
+export async function stampPublishedAt(pageId: string): Promise<void> {
+  const page = (await notion().pages.retrieve({ page_id: pageId })) as Page;
+  if (read.select(page.properties, P.status) !== "Published") return;
+  if (read.date(page.properties, P.publishedAt)) return;
+  await notion().pages.update({
+    page_id: pageId,
+    properties: { [P.publishedAt]: write.date(new Date().toISOString().slice(0, 10))! },
+  });
 }

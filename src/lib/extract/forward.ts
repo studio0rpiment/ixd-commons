@@ -13,6 +13,8 @@ export type ForwardParts = {
   subject: string | null;
   /** Authors in chain order: forwarded From first, then each quoted "wrote:" author. */
   authors: Author[];
+  /** Best guess at the employer's own words: the innermost quoted message, quote marks stripped. */
+  employerMessage: string;
 };
 
 const FORWARD_MARKERS = [
@@ -49,7 +51,20 @@ export function splitForward(text: string): ForwardParts {
     authors.push({ name: name || null, email: m[2].toLowerCase() });
   }
 
-  return { body, subject, authors: dedupe(authors) };
+  return { body, subject, authors: dedupe(authors), employerMessage: innermostMessage(body) };
+}
+
+/** Text after the last "… wrote:" line (or after the header block), with ">" markers and image tags removed. */
+function innermostMessage(body: string): string {
+  const wrote = [...body.matchAll(/^(?:>\s*)*on .{0,200}?wrote:\s*$/gim)].at(-1);
+  const msg = wrote ? body.slice(wrote.index! + wrote[0].length) : body.replace(/^(?:(?:from|von|date|sent|subject|betreff|to|an|cc)\s*:.*\n?)+/im, "");
+  return msg
+    .split("\n")
+    .map((l) => l.replace(/^(\s*>)+\s?/, ""))
+    .join("\n")
+    .replace(/\[image:[^\]]*\]\s*(<[^>]+>)?/gi, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 /** Drop a trailing "-- " signature block (the forwarder's own). */

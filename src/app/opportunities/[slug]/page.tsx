@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cachedListings } from "@/lib/notion/cache";
+import { cachedListings, cachedListingBlocks } from "@/lib/notion/cache";
+import { NotionBlocks } from "@/components/NotionBlocks";
 import { ListingMeta } from "@/components/ListingMeta";
 
 type Params = Promise<{ slug: string }>;
@@ -18,6 +19,7 @@ async function Detail({ params }: { params: Params }) {
   const { slug } = await params;
   const listing = (await cachedListings()).find((l) => l.slug === slug);
   if (!listing) notFound();
+  const blocks = await cachedListingBlocks(listing.id);
 
   return (
     <article>
@@ -28,6 +30,12 @@ async function Detail({ params }: { params: Params }) {
       <p style={{ fontSize: "var(--step-1)", margin: 0 }}>{listing.organization}</p>
       <ListingMeta listing={listing} />
       <p style={{ marginTop: "1.5rem" }}>{listing.summary}</p>
+
+      {blocks.length > 0 && (
+        <section style={{ marginTop: "1.5rem" }}>
+          <NotionBlocks blocks={blocks} />
+        </section>
+      )}
 
       <h2>How to apply</h2>
       {listing.applyUrl ? (

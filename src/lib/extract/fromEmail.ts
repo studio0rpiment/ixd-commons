@@ -55,6 +55,7 @@ export function extractListing(email: EmailInput, opts: ExtractOptions = {}): Li
     applyUrl,
     contactEmail,
     contactName,
+    description: fwd.employerMessage,
     summary: "",
     uncertain,
   };

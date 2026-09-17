@@ -23,7 +23,11 @@ One database, one review queue. Property names must match `src/lib/notion/proper
 | Published at   | Date      | Set this when you flip Status to Published (a Notion automation can do it) |
 | Forwarded by   | Email     | Which faculty member sent it in                         |
 
-Page body: the pipeline pastes the original email under "Original message".
+Page body: the pipeline pre-fills the employer's message as paragraphs (this is the public
+**description** — edit it freely: headings, lists, links all render on the site) and puts the raw
+forwarded email in a collapsed "Original message" toggle, which the site skips.
+
+"Published at" is stamped automatically by the site's webhook when Status flips to Published.
 
 ## Views to make in Notion
 
@@ -33,7 +37,6 @@ Page body: the pipeline pastes the original email under "Original message".
 
 ## Automations (Notion-side, no code)
 
-- When Status → Published: set Published at = now.
 - Notion form on this database for employer self-submission; default Status = Needs review, Source = form.
 
 ## Webhook
