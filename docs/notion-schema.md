@@ -37,7 +37,6 @@ forwarded email in a collapsed "Original message" toggle, which the site skips.
 
 ## Automations (Notion-side, no code)
 
-- Notion form on this database for employer self-submission; default Status = Needs review, Source = form.
 
 ## Webhook
 

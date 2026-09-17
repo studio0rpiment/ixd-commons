@@ -8,7 +8,7 @@ is the public face.
 
 ```
 employer email ─▶ faculty forwards ─▶ /api/inbound ─▶ pattern extract ─▶ Notion (Needs review)
-employer form  ─────────────────────────────────────────────────────▶ Notion (Needs review)
+employer form (/submit, server action) ─────────────────────────────▶ Notion (Needs review)
                                                                           │
                                           faculty flips Status → Published │
                                                                           ▼
@@ -26,8 +26,8 @@ src/lib/notion/      client, properties (column names), read/write helpers, list
 src/lib/extract/     fromEmail.ts — dependency-free pattern extraction (links, emails, dates) into ListingDraft
 src/lib/inbound/     normalize (provider payload → InboundEmail), verify (allowlist, secret)
 src/app/api/         inbound/ and notion-webhook/ route handlers
-src/app/             pages: /, /opportunities, /opportunities/[slug], /advising, /submit
-src/components/      Tag, ListingMeta, ListingCard, SiteHeader, NotionBlocks + RichText (page body → HTML)
+src/app/             pages: /, /opportunities, /opportunities/[slug], /advising, /submit (+ actions.ts)
+src/components/      Tag, ListingMeta, ListingCard, SiteHeader, NotionBlocks + RichText; form/ (Field, ChoiceGroup, SubmitForm)
 docs/notion-schema.md  the database to create in Notion
 scripts/             send-test-email.ts
 ```
