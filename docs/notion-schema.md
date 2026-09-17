@@ -17,7 +17,7 @@ One database, one review queue. Property names must match `src/lib/notion/proper
 | Contact name   | Text      |                                                         |
 | Summary        | Text      | Two sentences, student-facing                           |
 | Uncertain      | Text      | Extractor's notes for the reviewer; not shown publicly  |
-| Status         | Status    | Needs review → Published; also Expired, Declined        |
+| Status         | Select    | Needs review → Published; also Expired, Declined (Select, not Status: the API cannot set Status options) |
 | Source         | Select    | email, form, faculty, alumni                            |
 | Slug           | Text      | Auto-filled by the pipeline; editable                   |
 | Published at   | Date      | Set this when you flip Status to Published (a Notion automation can do it) |

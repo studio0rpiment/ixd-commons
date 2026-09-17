@@ -17,7 +17,7 @@ export const P = {
   contactName: "Contact name", // rich_text
   summary: "Summary", // rich_text
   uncertain: "Uncertain", // rich_text
-  status: "Status", // status
+  status: "Status", // select (Needs review / Published / Expired / Declined)
   source: "Source", // select
   slug: "Slug", // rich_text
   publishedAt: "Published at", // date

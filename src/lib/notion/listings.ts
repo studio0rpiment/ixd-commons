@@ -25,7 +25,7 @@ function toListing(page: Page): Listing | null {
   const parsed = Listing.safeParse({
     id: page.id,
     slug: read.text(p, P.slug) ?? slugify(organization, role),
-    status: read.status(p, P.status) ?? "Needs review",
+    status: read.select(p, P.status) ?? "Needs review",
     source: read.select(p, P.source) ?? "faculty",
     publishedAt: read.date(p, P.publishedAt),
     organization,
@@ -52,7 +52,7 @@ export async function getPublishedListings(): Promise<Listing[]> {
     data_source_id: listingsDataSource(),
     filter: {
       and: [
-        { property: P.status, status: { equals: "Published" satisfies ListingStatus } },
+        { property: P.status, select: { equals: "Published" satisfies ListingStatus } },
         {
           or: [
             { property: P.deadline, date: { is_empty: true } },
@@ -92,7 +92,7 @@ export async function createDraftListing(
       [P.contactName]: write.text(draft.contactName),
       [P.summary]: write.text(draft.summary),
       [P.uncertain]: write.text(draft.uncertain.join("; ") || null),
-      [P.status]: write.status("Needs review" satisfies ListingStatus),
+      [P.status]: write.select("Needs review" satisfies ListingStatus),
       [P.source]: write.select(meta.source),
       [P.slug]: write.text(slugify(draft.organization, draft.role)),
       [P.forwardedBy]: write.email(meta.forwardedBy),
