@@ -6,7 +6,7 @@ const style: CSSProperties = {
   lineHeight: 1,
   padding: "0.35em 0.6em",
   border: "1px solid var(--line)",
-  borderRadius: "999px",
+  borderRadius: "var(--radius)",
   color: "var(--muted)",
   whiteSpace: "nowrap",
 };

@@ -21,7 +21,7 @@ export function ChoiceGroup({
             gap: "0.4rem",
             padding: "0.35rem 0.7rem",
             border: "1px solid var(--line)",
-            borderRadius: "999px",
+            borderRadius: "var(--radius)",
             cursor: "pointer",
           }}
         >

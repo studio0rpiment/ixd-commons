@@ -5,7 +5,7 @@
   --line: #e4e0d8;
   --accent: #c8611a; /* orpiment-adjacent; swap when the identity lands */
   --accent-ink: #ffffff;
-  --radius: 0.5rem;
+  --radius: 0; /* square corners everywhere, by design */
   --measure: 42rem;
   --step--1: 0.875rem;
   --step-0: 1rem;
