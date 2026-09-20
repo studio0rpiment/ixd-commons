@@ -45,7 +45,6 @@ export function ThemeSwitch() {
       type="button"
       onClick={() => choose(next(theme))}
       aria-label={label}
-      title={label}
       style={{
         position: "fixed",
         top: "1rem",
