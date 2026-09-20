@@ -3,6 +3,9 @@
     mono  — default: white on black
     paper — light: cream + chocolate, orpiment accent (sound.orpiment.studio)
     rfc   — dark: IETF datatracker greys, blue links
+    custom — two colours the viewer picked (--bg/--fg set inline on <html>);
+             everything else is derived with color-mix
+    input — looks like mono; the corner shows the arrow + form button
   No data-theme → mono. The system preference is not consulted; the switch is
   there to explore, not to insist.
 */
@@ -27,6 +30,14 @@
   --accent: #eebd34;
   --accent-ink: #2b1810;
   --link: #2b1810;
+}
+
+:root[data-theme="custom"] {
+  --muted: color-mix(in srgb, var(--fg) 70%, transparent);
+  --line: color-mix(in srgb, var(--fg) 20%, transparent);
+  --accent: var(--fg);
+  --accent-ink: var(--bg);
+  --link: var(--fg);
 }
 
 :root[data-theme="rfc"] {

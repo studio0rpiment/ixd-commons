@@ -56,8 +56,9 @@ scripts/             send-test-email.ts
   mechanical fields (link, contact, deadline) filled; the reviewer writes org/role/summary in Notion.
 - **Sender allowlist on inbound.** The address is guessable; the allowlist is the gate.
 - **Expiry is computed per request** from Deadline, so nobody has to archive by hand.
-- **rem everywhere**, tokens on `:root`. Three themes via `data-theme` (mono / paper / rfc); mono is the
-  default, the corner icon cycles them, choice remembered per browser.
+- **rem everywhere**, tokens on `:root`. Themes via `data-theme`: mono (default) / paper / rfc, plus a
+  viewer-chosen two-colour `custom` that replaces paper. The corner icon cycles mono → light → rfc → input;
+  the input stop offers a return arrow and the two-colour form. Choice remembered per browser.
 
 ## Not yet
 
