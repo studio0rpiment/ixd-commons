@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   CUSTOM_KEY,
   THEME_KEY,
   applyTheme,
+  currentPair,
   isPair,
+  previewPair,
   isTheme,
   nextSlot,
   slotOf,
@@ -76,46 +78,72 @@ const iconButton: React.CSSProperties = {
 /**
  * Top-right corner: one quiet icon showing the current theme (click cycles
  * mono → light → rfc), and beneath it a square wavy button that opens the
- * two-colour form. A saved pair takes over the light slot.
+ * two-colour pickers. Dragging previews live. Closing with the same button
+ * keeps the pair (it becomes the light slot, shown as a bolt); clicking
+ * anywhere else puts the page back exactly as it was.
  */
 export function ThemeSwitch() {
   const { t: theme, p: pair } = JSON.parse(useSyncExternalStore(subscribe, read, readServer)) as {
     t: Theme;
     p: CustomPair | null;
   };
-  const [formOpen, setFormOpen] = useState(false);
+  const [draft, setDraft] = useState<CustomPair | null>(null); // non-null = panel open
+  const before = useRef<{ theme: Theme; pair: CustomPair | null } | null>(null);
+  const box = useRef<HTMLDivElement>(null);
   const slot: Slot = slotOf(theme);
 
+  const open = () => {
+    before.current = { theme, pair };
+    setDraft(currentPair());
+  };
+  const reset = () => {
+    if (before.current) applyTheme(before.current.theme, before.current.pair);
+    before.current = null;
+    setDraft(null);
+  };
+  const keep = () => {
+    if (draft) set("custom", draft);
+    before.current = null;
+    setDraft(null);
+  };
+
+  // Click anywhere outside the corner while open → reset. Event-driven, bound only while open.
+  useEffect(() => {
+    if (!draft) return;
+    const onDown = (e: PointerEvent) => {
+      if (!box.current?.contains(e.target as Node)) reset();
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft !== null]);
+
   const goTo = (s: Slot) => {
-    setFormOpen(false);
+    if (draft) reset();
     if (s === "light") set(pair ? "custom" : "paper", pair);
     else set(s, pair);
   };
 
   return (
-    <div style={corner}>
+    <div ref={box} style={corner}>
       <button type="button" onClick={() => goTo(nextSlot(slot))} aria-label={`Theme: ${theme}`} style={iconButton}>
         <ThemeIcon theme={theme} />
       </button>
       <button
         type="button"
-        onClick={() => setFormOpen((o) => !o)}
-        aria-label="Choose two colours"
-        aria-expanded={formOpen}
+        onClick={() => (draft ? keep() : open())}
+        aria-label={draft ? "Keep these colours" : "Choose two colours"}
+        aria-expanded={draft !== null}
         style={{ ...iconButton, border: "1px solid var(--line)" }}
       >
         <WavesIcon />
       </button>
-      {formOpen && (
+      {draft && (
         <ThemeForm
-          initial={pair ?? { bg: "#f5f4ed", fg: "#2b1810" }}
-          onEnter={(p) => {
-            setFormOpen(false);
-            set("custom", p);
-          }}
-          onLight={() => {
-            setFormOpen(false);
-            set("paper", null);
+          initial={draft}
+          onChange={(p) => {
+            setDraft(p);
+            previewPair(p);
           }}
         />
       )}

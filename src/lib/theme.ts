@@ -45,6 +45,18 @@ export function applyTheme(t: Theme, pair: CustomPair | null) {
   }
 }
 
+/** The page's current two colours, as the CSS tokens resolve right now. */
+export function currentPair(): CustomPair {
+  const cs = getComputedStyle(document.documentElement);
+  const hex = (v: string, fallback: string) => (/^#[0-9a-f]{6}$/i.test(v.trim()) ? v.trim().toLowerCase() : fallback);
+  return { bg: hex(cs.getPropertyValue("--bg"), "#000000"), fg: hex(cs.getPropertyValue("--fg"), "#ffffff") };
+}
+
+/** Live preview: paint a pair without remembering it. */
+export function previewPair(pair: CustomPair) {
+  applyTheme("custom", pair);
+}
+
 /**
  * Runs before first paint so a chosen theme never flashes. Mirrors applyTheme
  * without imports. With nothing stored, CSS renders the default (mono).

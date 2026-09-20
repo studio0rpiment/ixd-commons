@@ -58,7 +58,8 @@ scripts/             send-test-email.ts
 - **Expiry is computed per request** from Deadline, so nobody has to archive by hand.
 - **rem everywhere**, tokens on `:root`. Themes via `data-theme`: mono (default) / paper / rfc, plus a
   viewer-chosen two-colour `custom` that replaces paper. The corner icon cycles mono → light → rfc; the square
-  button beneath it opens the two-colour form. Choice remembered per browser.
+  button beneath it opens two colour pickers that preview live; closing with the same button keeps the
+  pair, clicking anywhere else resets. Choice remembered per browser.
 
 ## Not yet
 
