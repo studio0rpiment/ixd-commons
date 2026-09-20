@@ -3,11 +3,11 @@
 import { useState } from "react";
 import type { CustomPair } from "@/lib/theme";
 
-const square: React.CSSProperties = {
+const plain: React.CSSProperties = {
   font: "inherit",
   fontSize: "var(--step--1)",
-  padding: "0.25rem 0.5rem",
-  border: "1px solid var(--line)",
+  padding: "0.25rem 0",
+  border: 0,
   background: "transparent",
   color: "var(--fg)",
   cursor: "pointer",
@@ -43,14 +43,14 @@ export function ThemeForm({
         fontSize: "0.75rem",
       }}
     >
-      <Row label="Color 1" id="theme-bg" value={bg} onChange={setBg} />
-      <Row label="Color 2" id="theme-fg" value={fg} onChange={setFg} />
-      <div style={{ display: "flex", gap: "0.35rem", marginTop: "0.15rem" }}>
-        <button type="submit" style={{ ...square, background: "var(--fg)", color: "var(--bg)" }}>
-          Enter
+      <Row label="color 1" id="theme-bg" value={bg} onChange={setBg} />
+      <Row label="color 2" id="theme-fg" value={fg} onChange={setFg} />
+      <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.15rem" }}>
+        <button type="submit" style={plain}>
+          enter
         </button>
-        <button type="button" onClick={onLight} style={square}>
-          light theme
+        <button type="button" onClick={onLight} style={{ ...plain, color: "var(--muted)" }}>
+          light
         </button>
       </div>
     </form>
