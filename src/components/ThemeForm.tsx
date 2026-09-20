@@ -42,14 +42,8 @@ export function ThemeForm({
         fontSize: "var(--step--1)",
       }}
     >
-      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
-        Color 1
-        <input type="color" value={bg} onChange={(e) => setBg(e.target.value)} style={{ width: "2.5rem", height: "1.75rem", padding: 0, border: "1px solid var(--line)", background: "transparent" }} />
-      </label>
-      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
-        Color 2
-        <input type="color" value={fg} onChange={(e) => setFg(e.target.value)} style={{ width: "2.5rem", height: "1.75rem", padding: 0, border: "1px solid var(--line)", background: "transparent" }} />
-      </label>
+      <Row label="Color 1" id="theme-bg" value={bg} onChange={setBg} />
+      <Row label="Color 2" id="theme-fg" value={fg} onChange={setFg} />
       <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.25rem" }}>
         <button type="submit" style={{ ...square, background: "var(--fg)", color: "var(--bg)" }}>
           Enter
@@ -59,5 +53,22 @@ export function ThemeForm({
         </button>
       </div>
     </form>
+  );
+}
+
+/** Label text is inert; only the swatch opens the picker. */
+function Row({ label, id, value, onChange }: { label: string; id: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
+      <span aria-hidden="true">{label}</span>
+      <input
+        type="color"
+        id={id}
+        aria-label={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{ width: "2.5rem", height: "1.75rem", padding: 0, border: "1px solid var(--line)", background: "transparent", cursor: "pointer" }}
+      />
+    </div>
   );
 }
