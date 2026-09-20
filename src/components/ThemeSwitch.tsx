@@ -1,25 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { THEMES, THEME_KEY, isTheme, type Theme } from "@/lib/theme";
 
-/** Three-way theme picker. Writes data-theme on <html> and remembers per browser. */
-export function ThemeSwitch() {
-  const [theme, setTheme] = useState<Theme | null>(null);
+const EVENT = "gwdc-theme-change";
 
-  // Sync with what the init script already applied (event: mount).
-  useEffect(() => {
-    const t = document.documentElement.getAttribute("data-theme");
-    if (isTheme(t)) setTheme(t);
-  }, []);
-
-  const choose = (t: Theme) => {
-    setTheme(t);
-    document.documentElement.setAttribute("data-theme", t);
-    try {
-      localStorage.setItem(THEME_KEY, t);
-    } catch {}
+function subscribe(cb: () => void) {
+  window.addEventListener(EVENT, cb);
+  window.addEventListener("storage", cb); // another tab changed it
+  return () => {
+    window.removeEventListener(EVENT, cb);
+    window.removeEventListener("storage", cb);
   };
+}
+const read = (): Theme | null => {
+  const t = document.documentElement.getAttribute("data-theme");
+  return isTheme(t) ? t : null;
+};
+const readServer = () => null;
+
+function choose(t: Theme) {
+  document.documentElement.setAttribute("data-theme", t);
+  try {
+    localStorage.setItem(THEME_KEY, t);
+  } catch {}
+  window.dispatchEvent(new Event(EVENT));
+}
+
+/** Three-way theme picker. The <html data-theme> attribute is the store; clicks are the events. */
+export function ThemeSwitch() {
+  const theme = useSyncExternalStore(subscribe, read, readServer);
 
   return (
     <span role="group" aria-label="Theme" style={{ display: "inline-flex", gap: "0.25rem", marginLeft: "auto" }}>
@@ -29,7 +39,6 @@ export function ThemeSwitch() {
           type="button"
           onClick={() => choose(t)}
           aria-pressed={theme === t}
-          className="small"
           style={{
             font: "inherit",
             fontSize: "var(--step--1)",
