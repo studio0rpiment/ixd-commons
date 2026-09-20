@@ -45,8 +45,8 @@ export function ThemeForm({
         fontSize: "0.75rem",
       }}
     >
-      <Row label="color1" value={bg} onChange={setBg} />
-      <Row label="color2" value={fg} onChange={setFg} />
+      <ColorPicker value={bg} onChange={setBg} />
+      <ColorPicker value={fg} onChange={setFg} />
       <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.35rem" }}>
         <button type="submit" style={plain}>
           enter
@@ -56,25 +56,5 @@ export function ThemeForm({
         </button>
       </div>
     </form>
-  );
-}
-
-/** Label text is inert; only the swatch opens the picker. */
-function Row({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div style={{ display: "grid", gap: "2px", justifyItems: "start" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
-        <span aria-hidden="true">{label}</span>
-        <button
-          type="button"
-          aria-label={label}
-          aria-expanded={open}
-          onClick={() => setOpen((o) => !o)}
-          style={{ width: "1.75rem", height: "1.25rem", padding: 0, border: "1px solid var(--line)", background: value, cursor: "pointer" }}
-        />
-      </div>
-      {open && <ColorPicker value={value} onChange={onChange} />}
-    </div>
   );
 }

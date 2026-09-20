@@ -42,7 +42,7 @@ export function ColorPicker({ value, onChange }: { value: string; onChange: (hex
         onPointerDown={drag((x, y) => commit({ ...hsv, s: x, v: 1 - y }))}
         style={{
           position: "relative",
-          height: "6rem",
+          height: "4.2rem",
           background: `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, ${hue})`,
           cursor: "crosshair",
           touchAction: "none",
