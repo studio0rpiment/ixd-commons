@@ -5,8 +5,9 @@ import type { CustomPair } from "@/lib/theme";
 
 const plain: React.CSSProperties = {
   font: "inherit",
-  fontSize: "var(--step--1)",
-  padding: "0.25rem 0",
+  fontSize: "inherit",
+  lineHeight: "inherit",
+  padding: 0,
   border: 0,
   background: "transparent",
   color: "var(--fg)",
@@ -36,16 +37,16 @@ export function ThemeForm({
         display: "grid",
         gap: "0.35rem",
         padding: "0.5rem",
-        width: "9rem",
+        justifyItems: "start",
         border: "1px solid var(--line)",
         background: "var(--bg)",
         color: "var(--fg)",
         fontSize: "0.75rem",
       }}
     >
-      <Row label="color 1" id="theme-bg" value={bg} onChange={setBg} />
-      <Row label="color 2" id="theme-fg" value={fg} onChange={setFg} />
-      <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.15rem" }}>
+      <Row label="color1" id="theme-bg" value={bg} onChange={setBg} />
+      <Row label="color2" id="theme-fg" value={fg} onChange={setFg} />
+      <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.35rem" }}>
         <button type="submit" style={plain}>
           enter
         </button>
@@ -60,7 +61,7 @@ export function ThemeForm({
 /** Label text is inert; only the swatch opens the picker. */
 function Row({ label, id, value, onChange }: { label: string; id: string; value: string; onChange: (v: string) => void }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
       <span aria-hidden="true">{label}</span>
       <input
         type="color"
