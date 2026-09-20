@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ThemeSwitch } from "@/components/ThemeSwitch";
 import { themeInitScript } from "@/lib/theme";
 import { plexSans } from "@/fonts";
 
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
+        <ThemeSwitch />
         <SiteHeader />
         <main className="wrap" style={{ paddingBottom: "4rem" }}>
           {children}

@@ -1,4 +1,5 @@
-export const THEMES = ["paper", "ink", "rfc"] as const;
+/** Cycle order for the switch. First is the default. */
+export const THEMES = ["mono", "paper", "rfc"] as const;
 export type Theme = (typeof THEMES)[number];
 export const THEME_KEY = "gwdc-theme";
 
@@ -8,6 +9,6 @@ export function isTheme(v: unknown): v is Theme {
 
 /**
  * Runs before first paint so a chosen theme never flashes. Reads localStorage
- * only; with nothing stored, CSS falls back to the system preference.
+ * only; with nothing stored, CSS renders the default (mono).
  */
 export const themeInitScript = `(function(){try{var t=localStorage.getItem(${JSON.stringify(THEME_KEY)});if(t&&${JSON.stringify(THEMES)}.indexOf(t)>-1)document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;

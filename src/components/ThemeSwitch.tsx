@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { THEMES, THEME_KEY, isTheme, type Theme } from "@/lib/theme";
+import { ThemeIcon } from "./ThemeIcon";
 
 const EVENT = "gwdc-theme-change";
 
@@ -13,11 +14,15 @@ function subscribe(cb: () => void) {
     window.removeEventListener("storage", cb);
   };
 }
-const read = (): Theme | null => {
+const read = (): Theme => {
   const t = document.documentElement.getAttribute("data-theme");
-  return isTheme(t) ? t : null;
+  return isTheme(t) ? t : THEMES[0];
 };
-const readServer = () => null;
+const readServer = (): Theme => THEMES[0];
+
+function next(t: Theme): Theme {
+  return THEMES[(THEMES.indexOf(t) + 1) % THEMES.length];
+}
 
 function choose(t: Theme) {
   document.documentElement.setAttribute("data-theme", t);
@@ -27,31 +32,37 @@ function choose(t: Theme) {
   window.dispatchEvent(new Event(EVENT));
 }
 
-/** Three-way theme picker. The <html data-theme> attribute is the store; clicks are the events. */
+/**
+ * One quiet icon in the top-right corner showing the current theme; click to
+ * cycle. The <html data-theme> attribute is the store; clicks are the events.
+ */
 export function ThemeSwitch() {
   const theme = useSyncExternalStore(subscribe, read, readServer);
+  const label = `Theme: ${theme}. Switch to ${next(theme)}`;
 
   return (
-    <span role="group" aria-label="Theme" style={{ display: "inline-flex", gap: "0.25rem", marginLeft: "auto" }}>
-      {THEMES.map((t) => (
-        <button
-          key={t}
-          type="button"
-          onClick={() => choose(t)}
-          aria-pressed={theme === t}
-          style={{
-            font: "inherit",
-            fontSize: "var(--step--1)",
-            padding: "0.2rem 0.5rem",
-            border: "1px solid var(--line)",
-            background: theme === t ? "var(--fg)" : "transparent",
-            color: theme === t ? "var(--bg)" : "var(--muted)",
-            cursor: "pointer",
-          }}
-        >
-          {t}
-        </button>
-      ))}
-    </span>
+    <button
+      type="button"
+      onClick={() => choose(next(theme))}
+      aria-label={label}
+      title={label}
+      style={{
+        position: "fixed",
+        top: "1rem",
+        right: "1rem",
+        zIndex: 10,
+        display: "grid",
+        placeItems: "center",
+        width: "2.25rem",
+        height: "2.25rem",
+        padding: 0,
+        border: 0,
+        background: "transparent",
+        color: "var(--muted)",
+        cursor: "pointer",
+      }}
+    >
+      <ThemeIcon theme={theme} />
+    </button>
   );
 }

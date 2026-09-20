@@ -1,11 +1,23 @@
 /*
   Three themes, one token set. Pick with data-theme on <html>:
-    paper — light: cream + brown, orpiment accent (sound.orpiment.studio)
-    ink   — dark: the same pair inverted
+    mono  — default: white on black
+    paper — light: cream + chocolate, orpiment accent (sound.orpiment.studio)
     rfc   — dark: IETF datatracker greys, blue links
-  No data-theme → paper, or ink if the system prefers dark.
+  No data-theme → mono. The system preference is not consulted; the switch is
+  there to explore, not to insist.
 */
 :root,
+:root[data-theme="mono"] {
+  color-scheme: dark;
+  --bg: #000000;
+  --fg: #ffffff;
+  --muted: #ffffffb3;
+  --line: #ffffff33;
+  --accent: #ffffff;
+  --accent-ink: #000000;
+  --link: #ffffff;
+}
+
 :root[data-theme="paper"] {
   color-scheme: light;
   --bg: #f5f4ed;
@@ -15,30 +27,6 @@
   --accent: #eebd34;
   --accent-ink: #2b1810;
   --link: #2b1810;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    color-scheme: dark;
-    --bg: #2b1810;
-    --fg: #f5f4ed;
-    --muted: #f5f4edb3;
-    --line: #f5f4ed33;
-    --accent: #eebd34;
-    --accent-ink: #2b1810;
-    --link: #f5f4ed;
-  }
-}
-
-:root[data-theme="ink"] {
-  color-scheme: dark;
-  --bg: #2b1810;
-  --fg: #f5f4ed;
-  --muted: #f5f4edb3;
-  --line: #f5f4ed33;
-  --accent: #eebd34;
-  --accent-ink: #2b1810;
-  --link: #f5f4ed;
 }
 
 :root[data-theme="rfc"] {
