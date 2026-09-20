@@ -1,13 +1,13 @@
 /**
- * The corner switch cycles four slots. The "light" slot is paper until a
- * custom pair is saved, then it is that pair. "input" looks like mono and
- * shows the return arrow + the form button.
+ * The corner switch cycles three slots. The "light" slot is paper until a
+ * custom pair is saved, then it is that pair. The square button beneath the
+ * icon opens the two-colour form at any time.
  */
-export const SLOTS = ["mono", "light", "rfc", "input"] as const;
+export const SLOTS = ["mono", "light", "rfc"] as const;
 export type Slot = (typeof SLOTS)[number];
 
 /** What actually goes on <html data-theme>. */
-export const THEMES = ["mono", "paper", "custom", "rfc", "input"] as const;
+export const THEMES = ["mono", "paper", "custom", "rfc"] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const THEME_KEY = "gwdc-theme";

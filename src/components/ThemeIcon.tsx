@@ -36,16 +36,6 @@ export function ThemeIcon({ theme }: { theme: Theme }) {
   }
 }
 
-/** Return arrow: down, then back left, with a rounded elbow. */
-export function ReturnIcon() {
-  return (
-    <svg {...common} stroke="currentColor">
-      <path d="M20 4v7a4 4 0 0 1-4 4H5" />
-      <path d="m9 11-4 4 4 4" />
-    </svg>
-  );
-}
-
 /** Three wavy lines. */
 export function WavesIcon() {
   return (

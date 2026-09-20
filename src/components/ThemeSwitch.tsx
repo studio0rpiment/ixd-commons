@@ -13,7 +13,7 @@ import {
   type Slot,
   type Theme,
 } from "@/lib/theme";
-import { ThemeIcon, ReturnIcon, WavesIcon } from "./ThemeIcon";
+import { ThemeIcon, WavesIcon } from "./ThemeIcon";
 import { ThemeForm } from "./ThemeForm";
 
 const EVENT = "gwdc-theme-change";
@@ -74,9 +74,9 @@ const iconButton: React.CSSProperties = {
 };
 
 /**
- * One quiet icon in the top-right corner showing the current theme; click to
- * cycle mono → light → rfc → input. The "input" stop shows a return arrow
- * (back to mono) and a square wavy button that opens the two-colour form.
+ * Top-right corner: one quiet icon showing the current theme (click cycles
+ * mono → light → rfc), and beneath it a square wavy button that opens the
+ * two-colour form. A saved pair takes over the light slot.
  */
 export function ThemeSwitch() {
   const { t: theme, p: pair } = JSON.parse(useSyncExternalStore(subscribe, read, readServer)) as {
@@ -92,20 +92,10 @@ export function ThemeSwitch() {
     else set(s, pair);
   };
 
-  if (slot !== "input") {
-    return (
-      <div style={corner}>
-        <button type="button" onClick={() => goTo(nextSlot(slot))} aria-label={`Theme: ${theme}`} style={iconButton}>
-          <ThemeIcon theme={theme} />
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div style={corner}>
-      <button type="button" onClick={() => goTo("mono")} aria-label="Back to default theme" style={iconButton}>
-        <ReturnIcon />
+      <button type="button" onClick={() => goTo(nextSlot(slot))} aria-label={`Theme: ${theme}`} style={iconButton}>
+        <ThemeIcon theme={theme} />
       </button>
       <button
         type="button"

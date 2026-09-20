@@ -5,7 +5,6 @@
     rfc   — dark: IETF datatracker greys, blue links
     custom — two colours the viewer picked (--bg/--fg set inline on <html>);
              everything else is derived with color-mix
-    input — looks like mono; the corner shows the arrow + form button
   No data-theme → mono. The system preference is not consulted; the switch is
   there to explore, not to insist.
 */
