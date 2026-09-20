@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeSwitch } from "./ThemeSwitch";
 
 const nav = [
   { href: "/opportunities", label: "Opportunities" },
@@ -18,6 +19,7 @@ export function SiteHeader() {
             {n.label}
           </Link>
         ))}
+        <ThemeSwitch />
       </nav>
     </header>
   );

@@ -1,10 +1,58 @@
+/*
+  Three themes, one token set. Pick with data-theme on <html>:
+    paper — light: cream + brown, orpiment accent (sound.orpiment.studio)
+    ink   — dark: the same pair inverted
+    rfc   — dark: IETF datatracker greys, blue links
+  No data-theme → paper, or ink if the system prefers dark.
+*/
+:root,
+:root[data-theme="paper"] {
+  color-scheme: light;
+  --bg: #f5f4ed;
+  --fg: #2b1810;
+  --muted: #2b1810b3;
+  --line: #2b181033;
+  --accent: #eebd34;
+  --accent-ink: #2b1810;
+  --link: #2b1810;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --bg: #2b1810;
+    --fg: #f5f4ed;
+    --muted: #f5f4edb3;
+    --line: #f5f4ed33;
+    --accent: #eebd34;
+    --accent-ink: #2b1810;
+    --link: #f5f4ed;
+  }
+}
+
+:root[data-theme="ink"] {
+  color-scheme: dark;
+  --bg: #2b1810;
+  --fg: #f5f4ed;
+  --muted: #f5f4edb3;
+  --line: #f5f4ed33;
+  --accent: #eebd34;
+  --accent-ink: #2b1810;
+  --link: #f5f4ed;
+}
+
+:root[data-theme="rfc"] {
+  color-scheme: dark;
+  --bg: #212529;
+  --fg: #dee2e6;
+  --muted: #dee2e6bf;
+  --line: #495057;
+  --accent: #6ea8fe;
+  --accent-ink: #212529;
+  --link: #6ea8fe;
+}
+
 :root {
-  --bg: #fbfaf7;
-  --fg: #1a1a1a;
-  --muted: #6b6760;
-  --line: #e4e0d8;
-  --accent: #c8611a; /* orpiment-adjacent; swap when the identity lands */
-  --accent-ink: #ffffff;
   --radius: 0; /* square corners everywhere, by design */
   --measure: 42rem;
   --step--1: 0.875rem;
@@ -12,17 +60,6 @@
   --step-1: 1.25rem;
   --step-2: 1.6rem;
   --step-3: 2.1rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #141311;
-    --fg: #ece8e0;
-    --muted: #a39d92;
-    --line: #2d2a25;
-    --accent: #e8813a;
-    --accent-ink: #141311;
-  }
 }
 
 * {
@@ -40,7 +77,7 @@ body {
   margin: 0;
 }
 a {
-  color: inherit;
+  color: var(--link);
 }
 .wrap {
   max-width: var(--measure);
@@ -63,4 +100,10 @@ h2 {
 }
 .small {
   font-size: var(--step--1);
+}
+input,
+textarea,
+button,
+select {
+  border-radius: var(--radius);
 }
