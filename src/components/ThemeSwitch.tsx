@@ -134,7 +134,7 @@ export function ThemeSwitch() {
         onClick={() => (draft ? keep() : open())}
         aria-label={draft ? "Keep these colours" : "Choose two colours"}
         aria-expanded={draft !== null}
-        style={{ ...iconButton, border: "1px solid var(--line)" }}
+        style={iconButton}
       >
         <WavesIcon />
       </button>
