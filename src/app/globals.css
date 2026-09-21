@@ -105,3 +105,29 @@ button,
 select {
   border-radius: var(--radius);
 }
+
+/* The colour-picker button: bottom right, breathing, almost hidden. */
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.breathe {
+  animation: breathe 9s ease-in-out infinite;
+}
+.breathe:hover,
+.breathe:focus-visible,
+.breathe[aria-expanded="true"] {
+  animation: none;
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .breathe {
+    animation: none;
+    opacity: 0.2;
+  }
+}

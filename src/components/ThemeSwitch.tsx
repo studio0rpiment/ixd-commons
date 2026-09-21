@@ -54,9 +54,15 @@ function set(t: Theme, pair: CustomPair | null) {
   window.dispatchEvent(new Event(EVENT));
 }
 
-const corner: React.CSSProperties = {
+const topRight: React.CSSProperties = {
   position: "fixed",
   top: "1rem",
+  right: "1rem",
+  zIndex: 10,
+};
+const bottomRight: React.CSSProperties = {
+  position: "fixed",
+  bottom: "1rem",
   right: "1rem",
   zIndex: 10,
   display: "grid",
@@ -125,28 +131,33 @@ export function ThemeSwitch() {
   };
 
   return (
-    <div ref={box} style={corner}>
-      <button type="button" onClick={() => goTo(nextSlot(slot))} aria-label={`Theme: ${theme}`} style={iconButton}>
-        <ThemeIcon theme={theme} />
-      </button>
-      <button
-        type="button"
-        onClick={() => (draft ? keep() : open())}
-        aria-label={draft ? "Keep these colours" : "Choose two colours"}
-        aria-expanded={draft !== null}
-        style={iconButton}
-      >
-        <WavesIcon />
-      </button>
-      {draft && (
-        <ThemeForm
-          initial={draft}
-          onChange={(p) => {
-            setDraft(p);
-            previewPair(p);
-          }}
-        />
-      )}
+    <div ref={box}>
+      <div style={topRight}>
+        <button type="button" onClick={() => goTo(nextSlot(slot))} aria-label={`Theme: ${theme}`} style={iconButton}>
+          <ThemeIcon theme={theme} />
+        </button>
+      </div>
+      <div style={bottomRight}>
+        {draft && (
+          <ThemeForm
+            initial={draft}
+            onChange={(p) => {
+              setDraft(p);
+              previewPair(p);
+            }}
+          />
+        )}
+        <button
+          type="button"
+          className="breathe"
+          onClick={() => (draft ? keep() : open())}
+          aria-label={draft ? "Keep these colours" : "Choose two colours"}
+          aria-expanded={draft !== null}
+          style={iconButton}
+        >
+          <WavesIcon />
+        </button>
+      </div>
     </div>
   );
 }
