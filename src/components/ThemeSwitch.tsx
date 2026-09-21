@@ -149,7 +149,7 @@ export function ThemeSwitch() {
         )}
         <button
           type="button"
-          className="breathe"
+          className="quiet"
           onClick={() => (draft ? keep() : open())}
           aria-label={draft ? "Keep these colours" : "Choose two colours"}
           aria-expanded={draft !== null}

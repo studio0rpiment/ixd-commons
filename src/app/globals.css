@@ -106,28 +106,12 @@ select {
   border-radius: var(--radius);
 }
 
-/* The colour-picker button: bottom right, breathing, almost hidden. */
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 0.05;
-  }
-  50% {
-    opacity: 0.2;
-  }
+/* The colour-picker button: bottom right, almost hidden. */
+.quiet {
+  opacity: 0.2;
 }
-.breathe {
-  animation: breathe 9s ease-in-out infinite;
-}
-.breathe:hover,
-.breathe:focus-visible,
-.breathe[aria-expanded="true"] {
-  animation: none;
+.quiet:hover,
+.quiet:focus-visible,
+.quiet[aria-expanded="true"] {
   opacity: 1;
-}
-@media (prefers-reduced-motion: reduce) {
-  .breathe {
-    animation: none;
-    opacity: 0.15;
-  }
 }
