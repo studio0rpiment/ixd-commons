@@ -4,11 +4,14 @@ export function ChoiceGroup({
   options,
   kind,
   defaultValue,
+  labels,
 }: {
   name: string;
   options: readonly string[];
   kind: "radio" | "checkbox";
   defaultValue?: string;
+  /** Display text per option value, when the stored value isn't what people should read. */
+  labels?: Partial<Record<string, string>>;
 }) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
@@ -26,7 +29,7 @@ export function ChoiceGroup({
           }}
         >
           <input type={kind} name={name} value={o} defaultChecked={o === defaultValue} />
-          {o}
+          {labels?.[o] ?? o}
         </label>
       ))}
     </div>

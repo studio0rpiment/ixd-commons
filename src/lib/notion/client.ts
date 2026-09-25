@@ -16,3 +16,9 @@ export function listingsDataSource(): string {
   if (!id) throw new Error("NOTION_LISTINGS_DS is not set");
   return id;
 }
+
+export function alumniDataSource(): string {
+  const id = process.env.NOTION_ALUMNI_DS;
+  if (!id) throw new Error("NOTION_ALUMNI_DS is not set");
+  return id;
+}

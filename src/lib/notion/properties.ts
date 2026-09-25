@@ -23,3 +23,29 @@ export const P = {
   publishedAt: "Published at", // date
   forwardedBy: "Forwarded by", // email
 } as const;
+
+/** Alumni Catch-ups database property names. See docs/notion-schema.md. */
+export const A = {
+  name: "Name", // title
+  email: "Email", // email
+  programs: "Programs", // multi_select
+  level: "Level", // select
+  gradYear: "Grad year", // number
+  situation: "Situation", // select
+  role: "Role", // rich_text
+  organization: "Organization", // rich_text
+  orgType: "Org type", // select
+  fields: "Fields", // multi_select
+  location: "Location", // rich_text
+  firstDesignJob: "First design job", // select
+  pathIn: "Path in", // multi_select
+  programHighlight: "Program highlight", // rich_text
+  advice: "Advice", // rich_text
+  recentWork: "Recent work", // rich_text
+  workLink: "Work link", // url
+  portfolio: "Portfolio", // url
+  involvement: "Involvement", // multi_select
+  consent: "Consent", // select (By name / Anonymous / Internal only)
+  status: "Status", // select (New / Reviewed / Featured / Archived)
+  notes: "Notes", // rich_text, internal
+} as const;

@@ -1,30 +1,32 @@
 "use client";
 
-import { useActionState } from "react";
 import { submitListing, type SubmitState } from "@/app/submit/actions";
 import { ListingType, LocationMode, Program } from "@/lib/listing/schema";
 import { Field, control } from "./Field";
 import { ChoiceGroup } from "./ChoiceGroup";
+import { useFormAction } from "./useFormAction";
+import { Honeypot } from "./Honeypot";
+import { SubmitButton } from "./SubmitButton";
+import { FormNotice, FormError } from "./FormNotice";
 
 export function SubmitForm() {
-  const [state, action, pending] = useActionState<SubmitState, FormData>(submitListing, null);
+  const { state, pending, onSubmit } = useFormAction<SubmitState>(submitListing, null);
 
   if (state?.ok) {
     return (
-      <div style={{ padding: "1.5rem", border: "1px solid var(--line)", borderRadius: "var(--radius)" }}>
-        <h2 style={{ marginTop: 0 }}>Thanks — we have it.</h2>
+      <FormNotice title="Thanks — we have it.">
         <p>
           A faculty member will review the listing, usually within a few days, and it will appear on the
           board once approved. We&apos;ll email you if we have questions.
         </p>
-      </div>
+      </FormNotice>
     );
   }
 
   const err = state && !state.ok ? state.errors : {};
 
   return (
-    <form action={action} noValidate>
+    <form onSubmit={onSubmit} noValidate>
       <Field label="Organization" htmlFor="organization" error={err.organization}>
         <input id="organization" name="organization" style={control} required />
       </Field>
@@ -62,35 +64,9 @@ export function SubmitForm() {
         <textarea id="description" name="description" rows={8} style={control} required />
       </Field>
 
-      {/* Honeypot: hidden from people, filled by bots. */}
-      <div aria-hidden="true" style={{ position: "absolute", left: "-10000px" }}>
-        <label>
-          Website <input name="website" tabIndex={-1} autoComplete="off" />
-        </label>
-      </div>
-
-      {err.form && (
-        <p role="alert" style={{ color: "var(--accent)" }}>
-          {err.form}
-        </p>
-      )}
-
-      <button
-        type="submit"
-        disabled={pending}
-        style={{
-          font: "inherit",
-          fontWeight: 600,
-          padding: "0.7rem 1.2rem",
-          border: 0,
-          borderRadius: "var(--radius)",
-          background: "var(--accent)",
-          color: "var(--accent-ink)",
-          cursor: pending ? "wait" : "pointer",
-        }}
-      >
-        {pending ? "Sending…" : "Submit for review"}
-      </button>
+      <Honeypot />
+      <FormError message={err.form} />
+      <SubmitButton pending={pending}>Submit for review</SubmitButton>
     </form>
   );
 }
