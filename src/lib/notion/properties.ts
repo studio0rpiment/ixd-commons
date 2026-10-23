@@ -30,15 +30,20 @@ export const A = {
   email: "Email", // email
   programs: "Programs", // multi_select
   level: "Level", // select
+  otherStudies: "Second major / minor", // rich_text
   gradYear: "Grad year", // number
   situation: "Situation", // select
+  situationOther: "Situation (other)", // rich_text
   role: "Role", // rich_text
   organization: "Organization", // rich_text
   orgType: "Org type", // select
+  orgTypeOther: "Org type (other)", // rich_text
   fields: "Fields", // multi_select
+  fieldsOther: "Fields (other)", // rich_text
   location: "Location", // rich_text
   firstDesignJob: "First design job", // select
   pathIn: "Path in", // multi_select
+  pathInOther: "Path in (other)", // rich_text
   programHighlight: "Program highlight", // rich_text
   advice: "Advice", // rich_text
   recentWork: "Recent work", // rich_text

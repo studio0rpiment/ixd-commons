@@ -90,19 +90,24 @@ export const AlumniReply = z.object({
   email: z.string().trim().email("Enter a valid email"),
   programs: z.array(Program).min(1, "Pick at least one program"),
   level: z.enum(Level.options, { message: "Pick one" }),
+  otherStudies: optText(200),
   gradYear: z.coerce
     .number({ message: "A four-digit year" })
     .int()
     .min(1990, "A four-digit year")
     .max(thisYear + 1, "A four-digit year"),
   situation: z.enum(Situation.options, { message: "Pick the closest one" }),
+  situationOther: optText(160),
   role: optText(160),
   organization: optText(160),
   orgType: OrgType.optional(),
+  orgTypeOther: optText(160),
   fields: z.array(Field),
+  fieldsOther: optText(160),
   location: optText(120),
   firstDesignJob: FirstDesignJob.optional(),
   pathIn: z.array(PathIn),
+  pathInOther: optText(160),
   programHighlight: optText(2000),
   advice: optText(2000),
   recentWork: optText(2000),

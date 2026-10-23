@@ -18,6 +18,7 @@
   --accent: #ffffff;
   --accent-ink: #000000;
   --link: #ffffff;
+  --error: #ff2d7a;
 }
 
 :root[data-theme="paper"] {
@@ -29,6 +30,7 @@
   --accent: #eebd34;
   --accent-ink: #2b1810;
   --link: #2b1810;
+  --error: #c2185b;
 }
 
 :root[data-theme="custom"] {
@@ -37,6 +39,8 @@
   --accent: var(--fg);
   --accent-ink: var(--bg);
   --link: var(--fg);
+  /* fuchsia pulled toward the viewer's text colour, so it keeps some contrast on any pair */
+  --error: color-mix(in oklab, #e8196f 65%, var(--fg));
 }
 
 :root[data-theme="rfc"] {
@@ -48,6 +52,7 @@
   --accent: #6ea8fe;
   --accent-ink: #212529;
   --link: #6ea8fe;
+  --error: #ff5c93;
 }
 
 :root {

@@ -22,7 +22,7 @@ export function Field({
       {hint && <div className="muted small">{hint}</div>}
       {children}
       {error && (
-        <div className="small" style={{ color: "var(--accent)" }} role="alert">
+        <div className="small" style={{ color: "var(--error)" }} role="alert">
           {error}
         </div>
       )}

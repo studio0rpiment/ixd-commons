@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { submitAlumniReply } from "@/app/site/alumniCatchup/actions";
 import type { FormState } from "@/lib/form";
 import { Program } from "@/lib/listing/schema";
@@ -32,6 +33,10 @@ export function AlumniForm() {
           Your answers went straight to the GW Design faculty. If you offered to get involved, one of us
           will be in touch.
         </p>
+        <p>
+          While you&apos;re here: <Link href="/">GW Design Commons</Link> is where current students find
+          internships and jobs. Hiring? <Link href="/submit">Post an opportunity</Link>.
+        </p>
       </FormNotice>
     );
   }
@@ -53,6 +58,14 @@ export function AlumniForm() {
         <Field label="Degree" error={err.level}>
           <ChoiceGroup name="level" kind="radio" options={Level.options} />
         </Field>
+        <Field
+          label="Second major or minor"
+          htmlFor="otherStudies"
+          hint="Optional — whatever you paired design with, e.g. Psychology minor."
+          error={err.otherStudies}
+        >
+          <input id="otherStudies" name="otherStudies" maxLength={200} style={control} />
+        </Field>
         <Field label="Graduation year" htmlFor="gradYear" error={err.gradYear}>
           <input
             id="gradYear"
@@ -68,7 +81,12 @@ export function AlumniForm() {
 
       <FormSection title="Right now">
         <Field label="What best describes what you're doing?" error={err.situation}>
-          <ChoiceGroup name="situation" kind="radio" options={Situation.options} />
+          <ChoiceGroup
+            name="situation"
+            kind="radio"
+            options={Situation.options}
+            other={{ value: "Other", name: "situationOther" }}
+          />
         </Field>
         <Field label="Role or title" htmlFor="role" hint="Optional" error={err.role}>
           <input id="role" name="role" autoComplete="organization-title" style={control} />
@@ -77,13 +95,23 @@ export function AlumniForm() {
           <input id="organization" name="organization" autoComplete="organization" style={control} />
         </Field>
         <Field label="Kind of organization" hint="Optional" error={err.orgType}>
-          <ChoiceGroup name="orgType" kind="radio" options={OrgType.options} />
+          <ChoiceGroup
+            name="orgType"
+            kind="radio"
+            options={OrgType.options}
+            other={{ value: "Other", name: "orgTypeOther" }}
+          />
         </Field>
         <Field label="Where you're based" htmlFor="location" hint="Optional — city, or 'remote'." error={err.location}>
           <input id="location" name="location" style={control} />
         </Field>
         <Field label="What kind of work fills your days?" hint="Optional — pick any." error={err.fields}>
-          <ChoiceGroup name="fields" kind="checkbox" options={WorkField.options} />
+          <ChoiceGroup
+            name="fields"
+            kind="checkbox"
+            options={WorkField.options}
+            other={{ value: "Something else", name: "fieldsOther" }}
+          />
         </Field>
       </FormSection>
 
@@ -92,7 +120,12 @@ export function AlumniForm() {
           <ChoiceGroup name="firstDesignJob" kind="radio" options={FirstDesignJob.options} />
         </Field>
         <Field label="How did you find your way in?" hint="Optional — pick any." error={err.pathIn}>
-          <ChoiceGroup name="pathIn" kind="checkbox" options={PathIn.options} />
+          <ChoiceGroup
+            name="pathIn"
+            kind="checkbox"
+            options={PathIn.options}
+            other={{ value: "Other", name: "pathInOther" }}
+          />
         </Field>
       </FormSection>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { submitListing, type SubmitState } from "@/app/submit/actions";
+import { submitListing, type SubmitState } from "@/app/(commons)/submit/actions";
 import { ListingType, LocationMode, Program } from "@/lib/listing/schema";
 import { Field, control } from "./Field";
 import { ChoiceGroup } from "./ChoiceGroup";

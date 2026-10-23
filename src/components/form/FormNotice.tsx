@@ -12,7 +12,7 @@ export function FormNotice({ title, children }: { title: string; children: React
 export function FormError({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <p role="alert" style={{ color: "var(--accent)" }}>
+    <p role="alert" style={{ color: "var(--error)" }}>
       {message}
     </p>
   );
