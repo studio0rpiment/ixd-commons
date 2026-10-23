@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { sections } from "@/components/SiteHeader";
+import { sections } from "@/lib/sections";
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
       <dl style={{ marginTop: "2.5rem" }}>
         {sections.map((s) => (
           <div key={s.href} style={{ paddingBlock: "1rem", borderTop: "1px solid var(--line)" }}>
-            <dt style={{ fontWeight: 700 }}>
+            <dt>
               <Link href={s.href}>{s.label}</Link>
             </dt>
             <dd className="muted" style={{ margin: "0.25rem 0 0" }}>

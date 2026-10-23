@@ -19,6 +19,7 @@
   --accent-ink: #000000;
   --link: #ffffff;
   --error: #ff2d7a;
+  --highlight: #f23ce0; /* fuchsia, bluer than --error so a title never reads as a warning */
 }
 
 :root[data-theme="paper"] {
@@ -31,6 +32,7 @@
   --accent-ink: #2b1810;
   --link: #2b1810;
   --error: #c2185b;
+  --highlight: #c27c00; /* saturated orpiment, as dark as it goes before turning brown */
 }
 
 :root[data-theme="custom"] {
@@ -41,6 +43,7 @@
   --link: var(--fg);
   /* fuchsia pulled toward the viewer's text colour, so it keeps some contrast on any pair */
   --error: color-mix(in oklab, #e8196f 65%, var(--fg));
+  --highlight: var(--fg);
 }
 
 :root[data-theme="rfc"] {
@@ -53,6 +56,7 @@
   --accent-ink: #212529;
   --link: #6ea8fe;
   --error: #ff5c93;
+  --highlight: #6ea8fe;
 }
 
 :root {
@@ -79,8 +83,24 @@ html {
 body {
   margin: 0;
 }
+/* One link style everywhere: bold and underlined. The nav is the exception. */
 a {
   color: var(--link);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.nav a {
+  color: var(--muted);
+  font-weight: 400;
+  text-decoration: none;
+}
+.nav a[aria-current="page"] {
+  color: var(--fg);
+  font-weight: 700;
+}
+.nav a.brand {
+  color: var(--highlight);
 }
 .wrap {
   max-width: var(--measure);

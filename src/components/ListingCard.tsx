@@ -11,7 +11,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
       }}
     >
       <h3 style={{ margin: 0, fontSize: "var(--step-1)", lineHeight: 1.2 }}>
-        <Link href={`/opportunities/${listing.slug}`} style={{ textDecoration: "none" }}>
+        <Link href={`/opportunities/${listing.slug}`}>
           {listing.role}
         </Link>
       </h3>
