@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   CUSTOM_KEY,
-  THEME_KEY,
   applyTheme,
   currentPair,
   isPair,
@@ -47,7 +46,7 @@ const readServer = () => JSON.stringify({ t: "mono", p: null });
 function set(t: Theme, pair: CustomPair | null) {
   applyTheme(t, pair);
   try {
-    localStorage.setItem(THEME_KEY, t);
+    // Only the pair is remembered; which slot shows is picked fresh on each load.
     if (pair) localStorage.setItem(CUSTOM_KEY, JSON.stringify(pair));
     else if (t !== "custom") localStorage.removeItem(CUSTOM_KEY);
   } catch {}

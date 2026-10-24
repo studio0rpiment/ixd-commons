@@ -10,7 +10,6 @@ export type Slot = (typeof SLOTS)[number];
 export const THEMES = ["mono", "paper", "custom", "rfc"] as const;
 export type Theme = (typeof THEMES)[number];
 
-export const THEME_KEY = "gwdc-theme";
 export const CUSTOM_KEY = "gwdc-custom";
 
 export type CustomPair = { bg: string; fg: string };
@@ -58,11 +57,13 @@ export function previewPair(pair: CustomPair) {
 }
 
 /**
- * Runs before first paint so a chosen theme never flashes. Mirrors applyTheme
- * without imports. With nothing stored, CSS renders the default (mono).
+ * Runs before first paint, so nothing flashes. Every load (new visit or
+ * refresh) lands on one of the three slots at random; the switch moves on from
+ * there, and the choice lasts until the next load. The light slot is the saved
+ * custom pair when there is one, else paper. Mirrors applyTheme without imports.
  */
 export const themeInitScript = `(function(){try{
-var el=document.documentElement,t=localStorage.getItem(${JSON.stringify(THEME_KEY)});
-if(t==="custom"){var p=JSON.parse(localStorage.getItem(${JSON.stringify(CUSTOM_KEY)})||"null");
-if(p&&/^#[0-9a-f]{6}$/i.test(p.bg)&&/^#[0-9a-f]{6}$/i.test(p.fg)){el.style.setProperty("--bg",p.bg);el.style.setProperty("--fg",p.fg);}else{t="paper";}}
-if(t&&${JSON.stringify(THEMES)}.indexOf(t)>-1)el.setAttribute("data-theme",t);}catch(e){}})();`;
+var el=document.documentElement,s=${JSON.stringify(SLOTS)}[Math.floor(Math.random()*${SLOTS.length})],t=s;
+if(s==="light"){t="paper";try{var p=JSON.parse(localStorage.getItem(${JSON.stringify(CUSTOM_KEY)})||"null");
+if(p&&/^#[0-9a-f]{6}$/i.test(p.bg)&&/^#[0-9a-f]{6}$/i.test(p.fg)){t="custom";el.style.setProperty("--bg",p.bg);el.style.setProperty("--fg",p.fg);}}catch(e){}}
+el.setAttribute("data-theme",t);}catch(e){}})();`;
