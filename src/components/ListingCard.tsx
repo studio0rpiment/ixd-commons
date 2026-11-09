@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Listing } from "@/lib/listing/schema";
 import { ListingMeta } from "./ListingMeta";
+import { isClosed } from "@/lib/listing/closed";
 
 export function ListingCard({ listing }: { listing: Listing }) {
   return (
@@ -8,6 +9,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
       style={{
         padding: "1rem 0",
         borderBottom: "1px solid var(--line)",
+        opacity: isClosed(listing) ? 0.5 : 1, // closed listings stay up, dimmed
       }}
     >
       <h3 style={{ margin: 0, fontSize: "var(--step-1)", lineHeight: 1.2 }}>

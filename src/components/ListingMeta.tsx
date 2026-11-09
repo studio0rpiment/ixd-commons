@@ -1,4 +1,6 @@
 import type { Listing } from "@/lib/listing/schema";
+import { isClosed } from "@/lib/listing/closed";
+import { formatPlace } from "@/lib/listing/place";
 import { Tag } from "./Tag";
 
 /** The row of facts under a listing title. Shared by card and detail page. */
@@ -7,9 +9,9 @@ export function ListingMeta({ listing }: { listing: Listing }) {
     ...listing.programs,
     listing.type,
     listing.locationMode,
-    listing.location,
+    formatPlace(listing.location),
     listing.compensation,
-    listing.deadline ? `due ${formatDate(listing.deadline)}` : "rolling",
+    deadlineTag(listing),
   ].filter((x): x is string => Boolean(x));
 
   return (
@@ -19,6 +21,11 @@ export function ListingMeta({ listing }: { listing: Listing }) {
       ))}
     </div>
   );
+}
+
+function deadlineTag(l: Listing): string {
+  if (isClosed(l)) return l.deadline ? `closed ${formatDate(l.deadline)}` : "closed";
+  return l.deadline ? `due ${formatDate(l.deadline)}` : "rolling";
 }
 
 export function formatDate(iso: string): string {

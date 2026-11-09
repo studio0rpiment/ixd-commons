@@ -44,11 +44,14 @@ function toListing(page: Page): Listing | null {
   return parsed.success ? parsed.data : null;
 }
 
-/** All Published listings, newest first. Deadline expiry is applied at request time (see `live`). */
-export async function getPublishedListings(): Promise<Listing[]> {
+/** Statuses the board shows. Expired stays up, dimmed; Needs review and Declined never show. */
+const ON_BOARD: ListingStatus[] = ["Published", "Expired"];
+
+/** Published and Expired listings, newest first. Whether one is closed is decided per request (see `isClosed`). */
+export async function getBoardListings(): Promise<Listing[]> {
   const res = await notion().dataSources.query({
     data_source_id: listingsDataSource(),
-    filter: { property: P.status, select: { equals: "Published" satisfies ListingStatus } },
+    filter: { or: ON_BOARD.map((s) => ({ property: P.status, select: { equals: s } })) },
     sorts: [
       { property: P.publishedAt, direction: "descending" },
       { timestamp: "created_time", direction: "descending" },
@@ -57,15 +60,6 @@ export async function getPublishedListings(): Promise<Listing[]> {
   return res.results.map((r) => toListing(r as Page)).filter((l): l is Listing => l !== null);
 }
 
-/** Drop listings whose deadline has passed, as of now. Pure; call at request time. */
-export function live(listings: Listing[], today = new Date().toISOString().slice(0, 10)): Listing[] {
-  return listings.filter((l) => !l.deadline || l.deadline >= today);
-}
-
-export async function getListingBySlug(slug: string): Promise<Listing | null> {
-  const all = await getPublishedListings();
-  return all.find((l) => l.slug === slug) ?? null;
-}
 
 /** Create a Needs-review row. The original email body goes in the page content. */
 export async function createDraftListing(

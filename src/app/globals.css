@@ -62,7 +62,7 @@
 
 :root {
   --radius: 0; /* square corners everywhere, by design */
-  --measure: 42rem;
+  --measure: 46.2rem; /* 42rem + 10% */
   --step--1: 0.875rem;
   --step-0: 1rem;
   --step-1: 1.25rem;
@@ -96,12 +96,9 @@ a {
   font-weight: 400;
   text-decoration: none;
 }
-.nav a[aria-current="page"] {
-  color: var(--fg);
-  font-weight: 700;
-}
 .nav a.brand {
   color: var(--highlight);
+  font-weight: 700;
 }
 .wrap {
   max-width: var(--measure);

@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { getPublishedListings, getListingBlocks, type Block } from "./listings";
+import { getBoardListings, getListingBlocks, type Block } from "./listings";
 import type { Listing } from "@/lib/listing/schema";
 
 export const LISTINGS_TAG = "listings";
@@ -20,7 +20,7 @@ export async function cachedListings(): Promise<Listing[]> {
     console.warn("[listings] Notion env not set; rendering an empty board");
     return [];
   }
-  return getPublishedListings();
+  return getBoardListings();
 }
 
 export async function cachedListingBlocks(pageId: string): Promise<Block[]> {

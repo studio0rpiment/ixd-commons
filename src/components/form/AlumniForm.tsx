@@ -34,8 +34,8 @@ export function AlumniForm() {
           will be in touch.
         </p>
         <p>
-          While you&apos;re here: <Link href="/">GW Design Commons</Link> is where current students find
-          internships and jobs. Hiring? <Link href="/submit">Post an opportunity</Link>.
+          While you&apos;re here: <Link href="/">Corcoran Design Commons</Link> is where current students
+          find internships and jobs.
         </p>
       </FormNotice>
     );

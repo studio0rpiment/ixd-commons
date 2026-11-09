@@ -5,9 +5,9 @@ import { themeInitScript } from "@/lib/theme";
 import { plexSans } from "@/fonts";
 
 export const metadata: Metadata = {
-  title: { default: "GW Design Commons", template: "%s · GW Design Commons" },
+  title: { default: "Corcoran Design Commons", template: "%s · Corcoran Design Commons" },
   description:
-    "Opportunities and advising for GW Design — Graphic Design and Interaction Design at the Corcoran School, George Washington University.",
+    "Internships, jobs and research roles for Graphic Design and Interaction Design students at the Corcoran School of the Arts and Design, George Washington University.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

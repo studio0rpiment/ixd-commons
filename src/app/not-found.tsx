@@ -7,7 +7,7 @@ export default function NotFound() {
     <CommonsLayout>
       <h1>Not here</h1>
       <p className="muted">
-        That page doesn&apos;t exist, or the listing has closed. <Link href="/opportunities">See current opportunities</Link>.
+        That page doesn&apos;t exist. <Link href="/">See current opportunities</Link>.
       </p>
     </CommonsLayout>
   );
