@@ -11,6 +11,7 @@ const STATES: Record<string, string> = {
   Virginia: "VA", Washington: "WA", "West Virginia": "WV", Wisconsin: "WI", Wyoming: "WY",
 };
 const CODES = new Set(Object.values(STATES));
+const CITY_STATES = new Set(["Washington", "New York"]);
 
 // Longest names first, so "West Virginia" wins over "Virginia".
 const NAMES = Object.keys(STATES).sort((a, b) => b.length - a.length);
@@ -33,9 +34,10 @@ export function formatPlace(location: string | null): string | null {
   for (const [, city, state] of text.matchAll(CITY_STATE)) {
     const st = code(state);
     const name = city.trim();
-    // "State of North Carolina, State of New Jersey" is two states, not a city.
-    // A city may share a state's name (Washington, New York), so that alone isn't ruled out.
-    if (st && !/^(state of|remote|or|and)\b/i.test(name)) cities.push(`${name}, ${st}`);
+    // "State of North Carolina, State of New Jersey" or "North Carolina, New Jersey" is
+    // two states, not a city. Washington and New York are cities as well as states.
+    const stateNotCity = STATES[name] && !CITY_STATES.has(name);
+    if (st && !stateNotCity && !/^(state of|remote|or|and)\b/i.test(name)) cities.push(`${name}, ${st}`);
   }
   if (cities.length) return [...new Set(cities)].join(" · ");
 
